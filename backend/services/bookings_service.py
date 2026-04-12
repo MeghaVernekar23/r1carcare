@@ -3,7 +3,7 @@ from datetime import date, datetime
 from db.models.sqlalchemy_models import Booking, Packages, VehicleType
 from db.models.pydantic_models import AddBookingDetails, EditBookingDetails, AddPackageDetails, EditPackageDetails
 from utils.exceptions import BookingNotFoundException, InvalidFilterException
-from utils.db_utils import build_booking_details, get_active_packages, get_active_vehicle_types
+from utils.db_utils import build_booking_details, get_active_packages, get_active_vehicle_types, get_available_staff
 
 ALLOWED_FILTERS = ["today", "upcoming", "past", "pending", "confirmed", "completed", "cancelled"]
 
@@ -51,6 +51,14 @@ def delete_package(package_id: int, db: Session):
 
 def get_vehicle_types(db: Session):
     return get_active_vehicle_types(db)
+
+
+def get_available_staff_for_date(date_str: str, db: Session):
+    try:
+        target_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+    except ValueError:
+        raise InvalidFilterException(date_str, ["YYYY-MM-DD format required"])
+    return get_available_staff(target_date, db)
 
 
 def get_bookings_by_filter(filter: str, db: Session):
@@ -111,6 +119,7 @@ def add_booking(details: AddBookingDetails, db: Session) -> dict:
         vehicle_number=details.vehicle_number,
         appointment_date=details.appointment_date,
         appointment_time=details.appointment_time,
+        staff_id=details.staff_id,
         status=details.status or "pending",
         notes=details.notes,
         payment_mode=details.payment_mode,

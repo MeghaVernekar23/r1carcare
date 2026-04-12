@@ -33,6 +33,7 @@ class Booking(Base):
     payment_total = Column(Float)
     payment_paid = Column(Float)
     payment_notes = Column(Text)
+    staff_id = Column(Integer, ForeignKey("staff.staff_id"), nullable=True)
     created_by = Column(Integer, ForeignKey("users.id"))
     updated_by = Column(Integer, ForeignKey("users.id"))
     created_at = Column(DateTime, default=datetime.datetime.utcnow)

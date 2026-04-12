@@ -97,6 +97,8 @@ class BookingDetails(BaseModel):
     vehicle_number: Optional[str]
     appointment_date: Optional[date]
     appointment_time: Optional[str]
+    staff_id: Optional[int]
+    staff_name: Optional[str]
     status: Optional[str]
     notes: Optional[str]
     payment_mode: Optional[str]
@@ -117,6 +119,7 @@ class AddBookingDetails(BaseModel):
     vehicle_number: Optional[str] = None
     appointment_date: date
     appointment_time: str
+    staff_id: Optional[int] = None
     status: Optional[str] = "pending"
     notes: Optional[str] = None
     payment_mode: Optional[str] = None
@@ -133,6 +136,7 @@ class EditBookingDetails(BaseModel):
     vehicle_number: Optional[str] = None
     appointment_date: Optional[date] = None
     appointment_time: Optional[str] = None
+    staff_id: Optional[int] = None
     status: Optional[str] = None
     notes: Optional[str] = None
     payment_mode: Optional[str] = None

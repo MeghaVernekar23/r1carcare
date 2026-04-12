@@ -11,6 +11,7 @@ const emptyForm = {
   vehicle_number: "",
   appointment_date: "",
   appointment_time: "",
+  staff_id: "",
   status: "pending",
   payment_mode: "",
   payment_total: "",
@@ -23,6 +24,7 @@ export default function AddBooking() {
   const [packages, setPackages] = useState([]);
   const [vehicleTypes, setVehicleTypes] = useState([]);
   const [customerName, setCustomerName] = useState("");
+  const [availableStaff, setAvailableStaff] = useState([]);
   const [msg, setMsg] = useState(null);
   const [err, setErr] = useState(null);
 
@@ -30,6 +32,13 @@ export default function AddBooking() {
     apiRequest({ url: `${BASE_URL}/bookings/packages` }).then(setPackages).catch(() => {});
     apiRequest({ url: `${BASE_URL}/bookings/vehicle-types` }).then(setVehicleTypes).catch(() => {});
   }, []);
+
+  useEffect(() => {
+    if (!form.appointment_date) { setAvailableStaff([]); return; }
+    apiRequest({ url: `${BASE_URL}/bookings/available-staff?date=${form.appointment_date}` })
+      .then(setAvailableStaff)
+      .catch(() => setAvailableStaff([]));
+  }, [form.appointment_date]);
 
   const lookupCustomer = async () => {
     if (!form.customer_phone || form.customer_phone.length < 10) return;
@@ -70,6 +79,7 @@ export default function AddBooking() {
         vehicle_number: form.vehicle_number || null,
         appointment_date: form.appointment_date,
         appointment_time: form.appointment_time,
+        staff_id: form.staff_id ? parseInt(form.staff_id) : null,
         status: form.status,
         payment_mode: form.payment_mode || null,
         payment_total: form.payment_total ? parseFloat(form.payment_total) : null,
@@ -80,6 +90,7 @@ export default function AddBooking() {
       setMsg("Appointment booked successfully!");
       setForm(emptyForm);
       setCustomerName("");
+      setAvailableStaff([]);
     } catch (ex) {
       setErr(ex.message);
     }
@@ -151,12 +162,32 @@ export default function AddBooking() {
           <div className="cc-form-row">
             <div className="cc-form-group">
               <label>Appointment Date</label>
-              <input required type="date" value={form.appointment_date} onChange={e => setForm({ ...form, appointment_date: e.target.value })} />
+              <input required type="date" value={form.appointment_date}
+                onChange={e => setForm({ ...form, appointment_date: e.target.value, staff_id: "" })} />
             </div>
             <div className="cc-form-group">
               <label>Appointment Time</label>
               <input required type="time" value={form.appointment_time} onChange={e => setForm({ ...form, appointment_time: e.target.value })} />
             </div>
+          </div>
+
+          <div className="cc-form-row">
+            <div className="cc-form-group">
+              <label>Assign Staff</label>
+              <select value={form.staff_id} onChange={e => setForm({ ...form, staff_id: e.target.value })}
+                disabled={!form.appointment_date}>
+                <option value="">{form.appointment_date ? "Unassigned" : "Select a date first"}</option>
+                {availableStaff.map(s => (
+                  <option key={s.staff_id} value={s.staff_id}>
+                    {s.name}{s.role ? ` — ${s.role}` : ""}
+                  </option>
+                ))}
+              </select>
+              {form.appointment_date && availableStaff.length === 0 && (
+                <small style={{ color: "#94a3b8" }}>No staff available on this date</small>
+              )}
+            </div>
+            <div className="cc-form-group" />
           </div>
 
           <div className="cc-form-row">

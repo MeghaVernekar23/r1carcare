@@ -20,6 +20,7 @@ from services.bookings_service import (
     update_package,
     delete_package,
     get_vehicle_types,
+    get_available_staff_for_date,
     get_bookings_by_filter,
     get_bookings_by_date,
     get_booking_by_id,
@@ -93,6 +94,15 @@ def booked_slots(date: str = Query(...), db: Session = Depends(get_db)):
         Booking.status.notin_(["cancelled"])
     ).all()
     return [b.appointment_time for b in bookings]
+
+
+@bookings_router.get("/available-staff", description="Get available (active, not on holiday) staff for a date (public).")
+def available_staff(date: str = Query(...), db: Session = Depends(get_db)):
+    try:
+        staff = get_available_staff_for_date(date, db)
+        return [{"staff_id": s.staff_id, "name": s.name, "role": s.role} for s in staff]
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @bookings_router.get("/vehicle-types", response_model=List[VehicleTypeDetails], description="Get all vehicle types.")
