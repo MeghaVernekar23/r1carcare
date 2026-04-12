@@ -80,6 +80,21 @@ def remove_package(package_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail=str(e))
 
 
+@bookings_router.get("/booked-slots", description="Get booked time slots for a specific date (public).")
+def booked_slots(date: str = Query(...), db: Session = Depends(get_db)):
+    try:
+        from datetime import datetime as dt
+        target_date = dt.strptime(date, "%Y-%m-%d").date()
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Date must be in YYYY-MM-DD format")
+    from db.models.sqlalchemy_models import Booking
+    bookings = db.query(Booking).filter(
+        Booking.appointment_date == target_date,
+        Booking.status.notin_(["cancelled"])
+    ).all()
+    return [b.appointment_time for b in bookings]
+
+
 @bookings_router.get("/vehicle-types", response_model=List[VehicleTypeDetails], description="Get all vehicle types.")
 def list_vehicle_types(db: Session = Depends(get_db)):
     try:

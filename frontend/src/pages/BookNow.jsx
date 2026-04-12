@@ -4,7 +4,7 @@ import { apiRequest } from "../utils/APIrequest";
 import { BASE_URL } from "../services/utils";
 import "../css/BookNow.css";
 
-const TIMES = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
+const ALL_TIMES = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
 
 export default function BookNow() {
   const navigate = useNavigate();
@@ -18,11 +18,30 @@ export default function BookNow() {
   const [msg, setMsg] = useState(null);
   const [err, setErr] = useState(null);
   const [customerId, setCustomerId] = useState(null);
+  const [bookedSlots, setBookedSlots] = useState([]);
 
   useEffect(() => {
     apiRequest({ url: `${BASE_URL}/bookings/packages` }).then(setPackages).catch(() => {});
     apiRequest({ url: `${BASE_URL}/bookings/vehicle-types` }).then(setVehicleTypes).catch(() => {});
   }, []);
+
+  useEffect(() => {
+    if (!form.date) { setBookedSlots([]); return; }
+    apiRequest({ url: `${BASE_URL}/bookings/booked-slots?date=${form.date}` })
+      .then(setBookedSlots)
+      .catch(() => setBookedSlots([]));
+  }, [form.date]);
+
+  const getAvailableTimes = () => {
+    const today = new Date().toISOString().split("T")[0];
+    const now = new Date();
+    const currentHHMM = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+    return ALL_TIMES.filter(t => {
+      if (bookedSlots.includes(t)) return false;
+      if (form.date === today && t <= currentHHMM) return false;
+      return true;
+    });
+  };
 
   const lookupCustomer = async () => {
     if (!form.phone || form.phone.length < 10) return;
@@ -167,14 +186,14 @@ export default function BookNow() {
               <label>Preferred Date *</label>
               <input required type="date" value={form.date}
                 min={new Date().toISOString().split("T")[0]}
-                onChange={e => setForm({ ...form, date: e.target.value })} />
+                onChange={e => setForm({ ...form, date: e.target.value, time: "" })} />
             </div>
             <div className="bn-field">
               <label>Preferred Time *</label>
               <select required value={form.time}
                 onChange={e => setForm({ ...form, time: e.target.value })}>
                 <option value="">Select time slot</option>
-                {TIMES.map(t => <option key={t} value={t}>{t}</option>)}
+                {getAvailableTimes().map(t => <option key={t} value={t}>{t}</option>)}
               </select>
             </div>
           </div>
