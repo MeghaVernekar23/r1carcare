@@ -1,42 +1,43 @@
 .layout-root {
   display: flex;
   min-height: 100vh;
-  background: #0a0f1e;
+  background: #f1f5f9;
 }
 
-/* Sidebar */
+/* ── Sidebar ─────────────────────────────────────────── */
 .sidebar {
   width: 240px;
   flex-shrink: 0;
-  background: #0d1424;
-  border-right: 1px solid rgba(0,198,255,0.1);
+  background: #ffffff;
+  border-right: 1px solid #e2e8f0;
   display: flex;
   flex-direction: column;
   position: fixed;
   top: 0; left: 0; bottom: 0;
   z-index: 50;
   transition: transform 0.25s;
+  box-shadow: 2px 0 12px rgba(0,0,0,.04);
 }
 
 .sidebar-logo {
   padding: 1.25rem 1.25rem .75rem;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid #f1f5f9;
 }
 
 .sidebar-logo-text {
   font-size: 1.15rem;
   font-weight: 900;
-  color: #e2e8f0;
+  color: #1e293b;
 }
-.sidebar-logo-text .brand-r1 { color: #00c6ff; }
+.sidebar-logo-text .brand-r1 { color: #1d4ed8; }
 
 .sidebar-nav {
-  padding: .75rem .75rem;
+  padding: .75rem;
   flex: 1;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: .2rem;
+  gap: .15rem;
 }
 
 .sidebar-nav-item {
@@ -53,56 +54,57 @@
   width: 100%;
   text-align: left;
   transition: background .15s, color .15s;
+  font-weight: 500;
 }
 
 .sidebar-nav-item:hover {
-  background: rgba(0,198,255,0.08);
-  color: #e2e8f0;
+  background: #eff6ff;
+  color: #1d4ed8;
 }
 
 .sidebar-nav-item--active {
-  background: rgba(0,198,255,0.12);
-  color: #00c6ff;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-weight: 600;
 }
 
-.sidebar-nav-item--parent {
-  justify-content: flex-start;
-}
-
+.sidebar-nav-item--parent { justify-content: flex-start; }
 .sidebar-nav-item__chevron { margin-left: auto; }
 
 .sidebar-submenu {
   padding-left: 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: .15rem;
+  gap: .1rem;
   margin-top: .1rem;
 }
 
 .sidebar-nav-item--child {
   font-size: .83rem;
-  padding: .45rem .75rem;
+  padding: .42rem .75rem;
+  color: #94a3b8;
 }
+.sidebar-nav-item--child:hover { color: #1d4ed8; background: #eff6ff; }
+.sidebar-nav-item--child.sidebar-nav-item--active { color: #1d4ed8; }
 
 .sidebar-footer {
   padding: .75rem;
-  border-top: 1px solid rgba(255,255,255,0.06);
+  border-top: 1px solid #f1f5f9;
 }
 
-.sidebar-logout {
-  color: #ef4444;
-}
-.sidebar-logout:hover { background: rgba(239,68,68,.08); color: #ef4444; }
+.sidebar-logout { color: #ef4444; }
+.sidebar-logout:hover { background: #fef2f2; color: #dc2626; }
 
 /* Overlay (mobile) */
 .sidebar-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(15,23,42,.35);
   z-index: 40;
+  backdrop-filter: blur(2px);
 }
 
-/* Main area */
+/* ── Main area ───────────────────────────────────────── */
 .layout-main {
   flex: 1;
   margin-left: 240px;
@@ -117,48 +119,37 @@
   align-items: center;
   gap: 1rem;
   padding: .75rem 1.25rem;
-  background: #0d1424;
-  border-bottom: 1px solid rgba(0,198,255,0.1);
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
   position: sticky;
   top: 0;
   z-index: 30;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
 }
 
 .topbar-hamburger {
   background: none;
   border: none;
-  color: #94a3b8;
+  color: #64748b;
   font-size: 1.4rem;
   cursor: pointer;
   line-height: 1;
 }
 
-.topbar-brand {
-  font-size: 1rem;
-  font-weight: 800;
-}
-.topbar-brand .brand-r1 { color: #00c6ff; }
+.topbar-brand { font-size: 1rem; font-weight: 800; color: #1e293b; }
+.topbar-brand .brand-r1 { color: #1d4ed8; }
 
 .layout-content {
   flex: 1;
-  padding: 2rem;
+  padding: 2rem 2.25rem;
+  background: #f1f5f9;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .sidebar {
-    transform: translateX(-100%);
-  }
-  .sidebar--open {
-    transform: translateX(0);
-  }
-  .layout-main {
-    margin-left: 0;
-  }
-  .layout-topbar {
-    display: flex;
-  }
-  .layout-content {
-    padding: 1.25rem;
-  }
+  .sidebar { transform: translateX(-100%); }
+  .sidebar--open { transform: translateX(0); }
+  .layout-main { margin-left: 0; }
+  .layout-topbar { display: flex; }
+  .layout-content { padding: 1.25rem; }
 }
