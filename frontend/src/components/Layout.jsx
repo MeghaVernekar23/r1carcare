@@ -14,6 +14,7 @@ import {
   LogOut,
   Package,
   Umbrella,
+  UserCog,
 } from "lucide-react";
 
 const navItems = [
@@ -21,6 +22,7 @@ const navItems = [
   { label: "Customers", path: "/customers", Icon: Users },
   { label: "Packages", path: "/packages", Icon: Package },
   { label: "Holidays", path: "/holidays", Icon: Umbrella },
+  { label: "Staff", path: "/staff", Icon: UserCog },
   { label: "Add Appointment", path: "/addbooking", Icon: CalendarPlus },
   {
     label: "Appointments",

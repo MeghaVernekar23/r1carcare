@@ -157,6 +157,42 @@ class CustomerBookingSummary(BaseModel):
         from_attributes = True
 
 
+# ── Staff models ─────────────────────────────────────────
+class StaffDetails(BaseModel):
+    staff_id: int
+    name: str
+    phone_number: Optional[str]
+    role: Optional[str]
+    status: str
+    created_at: Optional[datetime]
+
+    class Config:
+        from_attributes = True
+
+
+class AddStaffDetails(BaseModel):
+    name: str
+    phone_number: Optional[str] = None
+    role: Optional[str] = None
+    status: str = "active"
+
+
+class StaffHolidayDetails(BaseModel):
+    id: int
+    staff_id: int
+    date: date
+    reason: Optional[str]
+
+    class Config:
+        from_attributes = True
+
+
+class AddStaffHolidayDetails(BaseModel):
+    staff_id: int
+    date: date
+    reason: Optional[str] = None
+
+
 # ── Holiday models ────────────────────────────────────────
 class HolidayCreate(BaseModel):
     title: str

@@ -75,3 +75,23 @@ class Holiday(Base):
     holiday_id = Column(Integer, primary_key=True, index=True)
     title = Column(String, nullable=False)
     date = Column(Date, nullable=False, unique=True)
+
+
+class Staff(Base):
+    __tablename__ = "staff"
+
+    staff_id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    phone_number = Column(String, nullable=True)
+    role = Column(String, nullable=True)
+    status = Column(String, default="active")
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+
+class StaffHoliday(Base):
+    __tablename__ = "staff_holidays"
+
+    id = Column(Integer, primary_key=True, index=True)
+    staff_id = Column(Integer, ForeignKey("staff.staff_id"), nullable=False)
+    date = Column(Date, nullable=False)
+    reason = Column(String, nullable=True)

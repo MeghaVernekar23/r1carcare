@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from db.models.sqlalchemy_models import Users, Booking, Customer, Packages, VehicleType
+from db.models.sqlalchemy_models import Users, Booking, Customer, Packages, VehicleType, Staff
 
 
 def get_user_by_username(username: str, db: Session):
@@ -20,6 +20,10 @@ def get_active_packages(db: Session):
 
 def get_active_vehicle_types(db: Session):
     return db.query(VehicleType).filter(VehicleType.active == 1).all()
+
+
+def get_staff_by_id(staff_id: int, db: Session):
+    return db.query(Staff).filter(Staff.staff_id == staff_id).first()
 
 
 def build_booking_details(booking: Booking, db: Session) -> dict:

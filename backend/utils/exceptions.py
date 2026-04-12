@@ -28,6 +28,12 @@ class CustomerAlreadyExistsException(Exception):
         super().__init__(self.message)
 
 
+class StaffNotFoundException(Exception):
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
+
+
 class InvalidFilterException(Exception):
     def __init__(self, filter_value: str, allowed_filters: list):
         allowed = ", ".join(allowed_filters)
