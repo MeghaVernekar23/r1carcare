@@ -254,43 +254,228 @@ function Home() {
                       <span /><span /><span /><span /><span />
                     </div>
 
-                    {/* THE CAR */}
+                    {/* THE CAR — Lamborghini-style supercar, faces left */}
                     <div className="wash-car">
-                      <svg viewBox="0 0 200 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <svg viewBox="0 0 280 88" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style={{transform:"scaleX(-1)"}}>
                         <defs>
-                          <linearGradient id="wBodyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%"   stopColor="#e8c49a" />
-                            <stop offset="40%"  stopColor="#c47a3a" />
-                            <stop offset="100%" stopColor="#5a2a08" />
+                          {/* Lamborghini yellow-orange body */}
+                          <linearGradient id="scBodyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%"   stopColor="#ffe066" />
+                            <stop offset="20%"  stopColor="#ffb800" />
+                            <stop offset="55%"  stopColor="#e07800" />
+                            <stop offset="100%" stopColor="#3a1c00" />
                           </linearGradient>
-                          <linearGradient id="wGlassGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%"   stopColor="#d0f0ff" stopOpacity="0.9" />
-                            <stop offset="100%" stopColor="#5aaac8" stopOpacity="0.7" />
+                          {/* top sheen — bright specular highlight */}
+                          <linearGradient id="scSheen" x1="0%" y1="0%" x2="10%" y2="100%">
+                            <stop offset="0%"   stopColor="rgba(255,255,255,0.55)" />
+                            <stop offset="40%"  stopColor="rgba(255,255,255,0.12)" />
+                            <stop offset="100%" stopColor="rgba(255,255,255,0)" />
                           </linearGradient>
-                          <radialGradient id="wWheelGrad" cx="50%" cy="40%" r="60%">
-                            <stop offset="0%"   stopColor="#666" />
-                            <stop offset="100%" stopColor="#111" />
+                          {/* dark carbon-look underside */}
+                          <linearGradient id="scUnder" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%"   stopColor="#1a0e00" />
+                            <stop offset="100%" stopColor="#0a0600" />
+                          </linearGradient>
+                          {/* windscreen — dark tinted */}
+                          <linearGradient id="scGlass" x1="0%" y1="0%" x2="60%" y2="100%">
+                            <stop offset="0%"   stopColor="#a0d4f0" stopOpacity="0.75" />
+                            <stop offset="100%" stopColor="#1a3a50" stopOpacity="0.88" />
+                          </linearGradient>
+                          {/* tyre */}
+                          <radialGradient id="scTyre" cx="38%" cy="32%" r="62%">
+                            <stop offset="0%"   stopColor="#4a4a4a" />
+                            <stop offset="55%"  stopColor="#181818" />
+                            <stop offset="100%" stopColor="#060606" />
                           </radialGradient>
+                          {/* Y-spoke rim — bright alloy */}
+                          <radialGradient id="scRim" cx="42%" cy="38%" r="58%">
+                            <stop offset="0%"   stopColor="#f0f0f0" />
+                            <stop offset="50%"  stopColor="#a0a0a0" />
+                            <stop offset="100%" stopColor="#484848" />
+                          </radialGradient>
+                          {/* brake caliper orange */}
+                          <linearGradient id="scCaliper" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%"   stopColor="#ff6600" />
+                            <stop offset="100%" stopColor="#cc4400" />
+                          </linearGradient>
                         </defs>
-                        {/* shadow */}
-                        <ellipse cx="100" cy="83" rx="72" ry="6" fill="rgba(0,0,0,0.25)" />
-                        {/* body */}
-                        <path d="M18 64 L24 50 C27 43 36 37 48 35 L90 29 C98 28 104 24 112 18 L128 8 C133 5 139 4 145 4 H168 C178 4 185 11 188 22 L191 38 C192 42 193 47 193 52 V61 C193 67 188 71 182 71 H173 C169 71 165 68 163 64 L157 54 H67 L59 64 C57 68 53 71 48 71 H32 C24 71 16 67 18 64 Z"
-                              fill="url(#wBodyGrad)" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
-                        {/* glass */}
-                        <path d="M72 34 L92 28 C100 26 106 22 113 17 L127 9 H158 C165 9 170 15 172 24 L174 37 H72 Z"
-                              fill="url(#wGlassGrad)" stroke="rgba(200,240,255,0.3)" strokeWidth="1" />
-                        {/* pillar line */}
-                        <line x1="114" y1="37" x2="114" y2="54" stroke="rgba(200,240,255,0.3)" strokeWidth="1.5" strokeLinecap="round" />
-                        {/* headlight */}
-                        <rect x="186" y="46" width="7" height="8" rx="3" fill="#ffd060" style={{filter:"drop-shadow(0 0 5px #ffd060)"}} />
-                        {/* tail light */}
-                        <rect x="16" y="49" width="8" height="6" rx="3" fill="#ff4444" style={{filter:"drop-shadow(0 0 4px #ff4444)"}} />
-                        {/* wheels */}
-                        <circle cx="60" cy="70" r="16" fill="url(#wWheelGrad)" stroke="#222" strokeWidth="3" className="wash-wheel" />
-                        <circle cx="60" cy="70" r="6"  fill="#888" stroke="#ccc" strokeWidth="2" className="wash-wheel-hub" />
-                        <circle cx="152" cy="70" r="16" fill="url(#wWheelGrad)" stroke="#222" strokeWidth="3" className="wash-wheel" />
-                        <circle cx="152" cy="70" r="6"  fill="#888" stroke="#ccc" strokeWidth="2" className="wash-wheel-hub" />
+
+                        {/* ══ GROUND SHADOW ══ */}
+                        <ellipse cx="140" cy="86" rx="110" ry="4" fill="rgba(0,0,0,0.35)" />
+
+                        {/* ══ DIFFUSER / UNDERTRAY ══ */}
+                        <path d="M 46 72 L 52 78 H 228 L 234 72 Z" fill="url(#scUnder)" />
+
+                        {/* ══ MAIN BODY — ultra-low, wide, angular Lambo silhouette ══
+                             Front (left): very long flat bonnet nearly touching ground
+                             Cabin: tiny greenhouse set far back
+                             Rear (right): squared-off fastback with high tail */}
+                        <path d="
+                          M 18 68
+                          L 20 58 L 22 52 L 30 46
+                          L 48 42 L 60 38 L 70 34
+                          L 84 26 Q 90 22 98 21
+                          L 128 20 Q 136 20 140 22
+                          L 152 26 Q 158 28 162 32
+                          L 174 36 Q 180 38 184 42
+                          L 198 44 L 220 46 L 240 48
+                          L 254 50 Q 262 52 264 58
+                          L 266 64 L 266 70
+                          L 240 72 L 60 72 L 36 70 Z"
+                              fill="url(#scBodyGrad)"
+                              stroke="rgba(255,230,80,0.25)" strokeWidth="0.8" />
+
+                        {/* ══ TOP SHEEN — wide specular stripe ══ */}
+                        <path d="
+                          M 70 34 L 84 26 Q 90 22 98 21
+                          L 128 20 Q 136 20 140 22
+                          L 152 26 Q 157 28 161 31
+                          L 172 35 Q 176 37 180 40
+                          L 100 43 L 72 40 Z"
+                              fill="url(#scSheen)" />
+
+                        {/* ══ ROOFLINE edge ══ */}
+                        <path d="M 84 24 Q 90 21 98 20 L 162 20 L 164 22 Q 158 20 98 21 Q 90 22 84 26 Z"
+                              fill="rgba(255,255,255,0.3)" />
+
+                        {/* ══ WINDSCREEN — sharply raked ══ */}
+                        <path d="M 85 27 Q 91 22 98 21 L 128 21 L 130 43 L 72 43 L 74 37 Q 78 30 85 27 Z"
+                              fill="url(#scGlass)"
+                              stroke="rgba(160,220,255,0.3)" strokeWidth="0.6" />
+                        {/* glare streak on windscreen */}
+                        <line x1="88" y1="24" x2="76" y2="40"
+                              stroke="rgba(255,255,255,0.35)" strokeWidth="1.5" strokeLinecap="round" />
+
+                        {/* ══ REAR ENGINE COVER / FLYING BUTTRESS ══ */}
+                        <path d="M 132 21 L 162 21 L 164 22 L 174 36 L 184 42 L 170 43 L 162 33 L 152 27 L 132 22 Z"
+                              fill="url(#scGlass)"
+                              stroke="rgba(160,220,255,0.2)" strokeWidth="0.6" />
+                        {/* glare on rear glass */}
+                        <line x1="148" y1="23" x2="168" y2="38"
+                              stroke="rgba(255,255,255,0.22)" strokeWidth="1.2" strokeLinecap="round" />
+
+                        {/* ══ ENGINE VENT / STRAKES behind cabin ══ */}
+                        <line x1="188" y1="42" x2="186" y2="54" stroke="rgba(0,0,0,0.5)" strokeWidth="1.5" strokeLinecap="round" />
+                        <line x1="194" y1="43" x2="192" y2="55" stroke="rgba(0,0,0,0.5)" strokeWidth="1.5" strokeLinecap="round" />
+                        <line x1="200" y1="44" x2="198" y2="56" stroke="rgba(0,0,0,0.5)" strokeWidth="1.5" strokeLinecap="round" />
+                        <line x1="206" y1="45" x2="204" y2="57" stroke="rgba(0,0,0,0.5)" strokeWidth="1.5" strokeLinecap="round" />
+
+                        {/* ══ SIDE INTAKE SCOOP (mid-body) ══ */}
+                        <path d="M 188 54 L 216 54 Q 220 54 222 58 L 222 65 L 186 65 Q 184 62 184 58 Q 184 54 188 54 Z"
+                              fill="#1a0e00" stroke="rgba(255,180,0,0.3)" strokeWidth="0.8" />
+                        {/* intake mesh lines */}
+                        <line x1="192" y1="54" x2="192" y2="65" stroke="rgba(255,180,0,0.2)" strokeWidth="0.8" />
+                        <line x1="198" y1="54" x2="198" y2="65" stroke="rgba(255,180,0,0.2)" strokeWidth="0.8" />
+                        <line x1="204" y1="54" x2="204" y2="65" stroke="rgba(255,180,0,0.2)" strokeWidth="0.8" />
+                        <line x1="210" y1="54" x2="210" y2="65" stroke="rgba(255,180,0,0.2)" strokeWidth="0.8" />
+                        <line x1="186" y1="58" x2="222" y2="58" stroke="rgba(255,180,0,0.2)" strokeWidth="0.8" />
+                        <line x1="185" y1="62" x2="222" y2="62" stroke="rgba(255,180,0,0.2)" strokeWidth="0.8" />
+
+                        {/* ══ DOOR LINE / CREASE ══ */}
+                        <path d="M 68 43 Q 120 46 182 43" fill="none"
+                              stroke="rgba(0,0,0,0.4)" strokeWidth="1.2" />
+
+                        {/* ══ DOOR HANDLE (flush, supercar style) ══ */}
+                        <rect x="108" y="50" width="22" height="2.5" rx="1.25"
+                              fill="rgba(255,240,180,0.5)" />
+
+                        {/* ══ SIDE SKIRT — angular / splitter-style ══ */}
+                        <path d="M 52 70 L 54 72 L 228 72 L 230 70 Z"
+                              fill="#0f0800" />
+                        <line x1="52" y1="71" x2="230" y2="71"
+                              stroke="rgba(255,180,0,0.3)" strokeWidth="0.8" />
+
+                        {/* ══ FRONT SPLITTER ══ */}
+                        <path d="M 14 70 L 20 65 L 46 65 L 46 72 L 18 72 Z"
+                              fill="#0f0800" stroke="rgba(255,180,0,0.25)" strokeWidth="0.6" />
+
+                        {/* ══ HEADLIGHT — angular blade-style (Aventador-ish) ══ */}
+                        <path d="M 20 52 L 48 46 L 52 56 L 30 62 Q 20 60 20 52 Z"
+                              fill="#111" />
+                        {/* main beam */}
+                        <path d="M 22 53 L 46 48 L 48 54 L 26 59 Q 20 58 22 53 Z"
+                              fill="#ffe080" style={{filter:"drop-shadow(0 0 7px #ffe060)"}} />
+                        {/* DRL — thin blade strip */}
+                        <line x1="22" y1="48" x2="50" y2="43"
+                              stroke="#ffffff" strokeWidth="2" strokeLinecap="round"
+                              style={{filter:"drop-shadow(0 0 4px #fff8c0)"}} />
+                        {/* lower DRL */}
+                        <line x1="20" y1="58" x2="46" y2="54"
+                              stroke="#ffe080" strokeWidth="1" strokeLinecap="round"
+                              opacity="0.6" />
+
+                        {/* ══ TAIL LIGHT — horizontal blade (Huracán-style) ══ */}
+                        <path d="M 250 48 L 266 52 L 266 68 L 248 70 Q 242 68 242 62 L 242 52 Q 244 48 250 48 Z"
+                              fill="#111" />
+                        {/* full-width LED strip */}
+                        <line x1="244" y1="50" x2="265" y2="54"
+                              stroke="#ff2200" strokeWidth="3" strokeLinecap="round"
+                              style={{filter:"drop-shadow(0 0 6px #ff2200)"}} />
+                        <line x1="243" y1="56" x2="265" y2="59"
+                              stroke="#ff4400" strokeWidth="1.5" strokeLinecap="round" opacity="0.7" />
+                        <line x1="243" y1="62" x2="265" y2="64"
+                              stroke="#ff3300" strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
+
+                        {/* ══ REAR WING ══ */}
+                        <rect x="238" y="28" width="40" height="5" rx="2.5"
+                              fill="#1a0e00" stroke="rgba(255,180,0,0.4)" strokeWidth="0.8" />
+                        {/* wing mount strut */}
+                        <rect x="252" y="28" width="3" height="14" rx="1"
+                              fill="#0f0800" />
+                        <rect x="262" y="28" width="3" height="14" rx="1"
+                              fill="#0f0800" />
+
+                        {/* ══ EXHAUST (twin pipes) ══ */}
+                        <ellipse cx="252" cy="70" rx="4"  ry="2.5" fill="#111" stroke="#555" strokeWidth="0.8" />
+                        <ellipse cx="260" cy="70" rx="4"  ry="2.5" fill="#111" stroke="#555" strokeWidth="0.8" />
+                        <ellipse cx="252" cy="70" rx="2.5" ry="1.5" fill="#1a1a1a" />
+                        <ellipse cx="260" cy="70" rx="2.5" ry="1.5" fill="#1a1a1a" />
+
+                        {/* ══ FRONT WHEEL ══ */}
+                        <g className="wash-wheel">
+                          {/* wide low-profile tyre */}
+                          <circle cx="68" cy="74" r="14" fill="url(#scTyre)" />
+                          <circle cx="68" cy="74" r="14" fill="none"
+                                  stroke="rgba(255,255,255,0.06)" strokeWidth="2.5" />
+                          {/* rim face */}
+                          <circle cx="68" cy="74" r="10" fill="url(#scRim)" />
+                          {/* Y-spoke (5-spoke staggered) */}
+                          <line x1="68" y1="64" x2="68" y2="84" stroke="#333" strokeWidth="2.5" />
+                          <line x1="58.4" y1="69" x2="77.6" y2="79" stroke="#333" strokeWidth="2.5" />
+                          <line x1="58.4" y1="79" x2="77.6" y2="69" stroke="#333" strokeWidth="2.5" />
+                          {/* rim inner ring */}
+                          <circle cx="68" cy="74" r="5" fill="#909090" stroke="#bbb" strokeWidth="1" />
+                          <circle cx="68" cy="74" r="2.5" fill="#e8e8e8" />
+                          {/* orange brake caliper */}
+                          <path d="M 57 70 Q 55 74 57 78 L 60 78 Q 58 74 60 70 Z"
+                                fill="url(#scCaliper)" opacity="0.9" />
+                        </g>
+
+                        {/* ══ REAR WHEEL ══ */}
+                        <g className="wash-wheel">
+                          <circle cx="200" cy="74" r="15" fill="url(#scTyre)" />
+                          <circle cx="200" cy="74" r="15" fill="none"
+                                  stroke="rgba(255,255,255,0.06)" strokeWidth="2.5" />
+                          {/* rear has wider rim — performance spec */}
+                          <circle cx="200" cy="74" r="11" fill="url(#scRim)" />
+                          <line x1="200" y1="63" x2="200" y2="85" stroke="#333" strokeWidth="2.5" />
+                          <line x1="189.4" y1="69" x2="210.6" y2="79" stroke="#333" strokeWidth="2.5" />
+                          <line x1="189.4" y1="79" x2="210.6" y2="69" stroke="#333" strokeWidth="2.5" />
+                          <circle cx="200" cy="74" r="5.5" fill="#909090" stroke="#bbb" strokeWidth="1" />
+                          <circle cx="200" cy="74" r="2.5" fill="#e8e8e8" />
+                          {/* orange brake caliper */}
+                          <path d="M 189 70 Q 187 74 189 78 L 192 78 Q 190 74 192 70 Z"
+                                fill="url(#scCaliper)" opacity="0.9" />
+                        </g>
+
+                        {/* ══ WHEEL ARCHES — flared wide ══ */}
+                        {/* front arch */}
+                        <path d="M 42 70 Q 40 56 68 56 Q 96 56 96 70 Z"
+                              fill="url(#scUnder)" />
+                        {/* rear arch */}
+                        <path d="M 174 72 Q 172 56 200 56 Q 228 56 228 72 Z"
+                              fill="url(#scUnder)" />
+
                       </svg>
 
                       {/* foam overlay on car - appears mid-wash */}

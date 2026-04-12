@@ -625,11 +625,11 @@
 /* ── Car ─────────────────────────────────────────────────── */
 .wash-car {
   position: absolute;
-  bottom: 18px;
+  bottom: 4px;
   left: 50%;
-  width: 200px;
-  margin-left: -100px;   /* centre it */
-  filter: drop-shadow(0 12px 18px rgba(0,0,0,0.4));
+  width: 260px;
+  margin-left: -130px;
+  filter: drop-shadow(0 8px 20px rgba(0,0,0,0.55));
   animation: carDrive var(--dur) ease-in-out infinite;
   z-index: 5;
 }
@@ -641,16 +641,11 @@
   overflow: visible;
 }
 
+/* target the <g> wheel groups */
 .wash-wheel {
   transform-box: fill-box;
   transform-origin: center;
   animation: wheelSpin var(--dur) linear infinite;
-}
-
-.wash-wheel-hub {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: wheelSpin var(--dur) linear infinite reverse;
 }
 
 /* foam blobs that appear on the car body during the wash */
