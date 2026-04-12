@@ -34,7 +34,10 @@ export default function AddBooking() {
   }, []);
 
   useEffect(() => {
-    if (!form.appointment_date) { setAvailableStaff([]); return; }
+    if (!form.appointment_date) {
+      setAvailableStaff([]);
+      return;
+    }
     apiRequest({ url: `${BASE_URL}/bookings/available-staff?date=${form.appointment_date}` })
       .then(setAvailableStaff)
       .catch(() => setAvailableStaff([]));
@@ -43,75 +46,93 @@ export default function AddBooking() {
   const lookupCustomer = async () => {
     if (!form.customer_phone || form.customer_phone.length < 10) return;
     try {
-      const c = await apiRequest({ url: `${BASE_URL}/customers/details/${form.customer_phone}` });
-      setForm(f => ({ ...f, customer_id: c.customer_id }));
-      setCustomerName(c.name);
+      const customer = await apiRequest({ url: `${BASE_URL}/customers/details/${form.customer_phone}` });
+      setForm((prev) => ({ ...prev, customer_id: customer.customer_id }));
+      setCustomerName(customer.name);
     } catch {
       setCustomerName("");
-      setForm(f => ({ ...f, customer_id: null }));
+      setForm((prev) => ({ ...prev, customer_id: null }));
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMsg(null); setErr(null);
+    setMsg(null);
+    setErr(null);
 
     let customerId = form.customer_id;
     if (!customerId) {
       try {
-        const res = await apiRequest({
+        const response = await apiRequest({
           url: `${BASE_URL}/customers/submit`,
           method: "POST",
           data: { name: customerName || "Walk-in", phone_number: form.customer_phone },
         });
-        customerId = res.customer_id;
-      } catch (ex) {
-        setErr("Could not create customer: " + ex.message);
+        customerId = response.customer_id;
+      } catch (error) {
+        setErr(`Could not create customer: ${error.message}`);
         return;
       }
     }
 
     try {
-      const payload = {
-        customer_id: customerId,
-        package_id: parseInt(form.package_id),
-        vehicle_type_id: parseInt(form.vehicle_type_id),
-        vehicle_number: form.vehicle_number || null,
-        appointment_date: form.appointment_date,
-        appointment_time: form.appointment_time,
-        staff_id: form.staff_id ? parseInt(form.staff_id) : null,
-        status: form.status,
-        payment_mode: form.payment_mode || null,
-        payment_total: form.payment_total ? parseFloat(form.payment_total) : null,
-        payment_paid: form.payment_paid ? parseFloat(form.payment_paid) : null,
-        notes: form.notes || null,
-      };
-      await apiRequest({ url: `${BASE_URL}/bookings/submit`, method: "POST", data: payload });
-      setMsg("Appointment booked successfully!");
+      await apiRequest({
+        url: `${BASE_URL}/bookings/submit`,
+        method: "POST",
+        data: {
+          customer_id: customerId,
+          package_id: parseInt(form.package_id, 10),
+          vehicle_type_id: parseInt(form.vehicle_type_id, 10),
+          vehicle_number: form.vehicle_number || null,
+          appointment_date: form.appointment_date,
+          appointment_time: form.appointment_time,
+          staff_id: form.staff_id ? parseInt(form.staff_id, 10) : null,
+          status: form.status,
+          payment_mode: form.payment_mode || null,
+          payment_total: form.payment_total ? parseFloat(form.payment_total) : null,
+          payment_paid: form.payment_paid ? parseFloat(form.payment_paid) : null,
+          notes: form.notes || null,
+        },
+      });
+      setMsg("Appointment booked successfully.");
       setForm(emptyForm);
       setCustomerName("");
       setAvailableStaff([]);
-    } catch (ex) {
-      setErr(ex.message);
+    } catch (error) {
+      setErr(error.message);
     }
   };
 
   return (
-    <div>
-      <div className="page-title">Add Appointment</div>
-      <div className="page-sub">Schedule a new car wash appointment</div>
+    <div className="page-shell">
+      <section className="page-header">
+        <div className="page-header-copy">
+          <span className="page-eyebrow">Front desk</span>
+          <h1 className="page-title">Add appointment</h1>
+          <p className="page-sub">
+            Create a wash booking manually for walk-ins, phone reservations, or customers who need a
+            staff-assisted slot.
+          </p>
+        </div>
+      </section>
 
       {msg && <div className="cc-alert-success">{msg}</div>}
       {err && <div className="cc-alert-error">{err}</div>}
 
       <div className="cc-form-card">
+        <div className="cc-form-card-head">
+          <h3>Booking details</h3>
+          <p>Assign the package, vehicle, time, and payment details in one place.</p>
+        </div>
+
         <form onSubmit={handleSubmit}>
           <div className="cc-form-row">
             <div className="cc-form-group">
               <label>Customer Phone</label>
               <input
-                required value={form.customer_phone}
-                onChange={e => setForm({ ...form, customer_phone: e.target.value })}
+                required
+                value={form.customer_phone}
+                onChange={(e) => setForm({ ...form, customer_phone: e.target.value })}
                 onBlur={lookupCustomer}
                 placeholder="Phone number"
               />
@@ -120,7 +141,7 @@ export default function AddBooking() {
               <label>Customer Name</label>
               <input
                 value={customerName}
-                onChange={e => setCustomerName(e.target.value)}
+                onChange={(e) => setCustomerName(e.target.value)}
                 placeholder="Auto-filled or enter manually"
               />
             </div>
@@ -129,16 +150,32 @@ export default function AddBooking() {
           <div className="cc-form-row">
             <div className="cc-form-group">
               <label>Wash Package</label>
-              <select required value={form.package_id} onChange={e => setForm({ ...form, package_id: e.target.value })}>
+              <select
+                required
+                value={form.package_id}
+                onChange={(e) => setForm({ ...form, package_id: e.target.value })}
+              >
                 <option value="">Select package</option>
-                {packages.map(p => <option key={p.package_id} value={p.package_id}>{p.package_name} — ₹{p.price}</option>)}
+                {packages.map((pkg) => (
+                  <option key={pkg.package_id} value={pkg.package_id}>
+                    {pkg.package_name} - Rs {pkg.price}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="cc-form-group">
               <label>Vehicle Type</label>
-              <select required value={form.vehicle_type_id} onChange={e => setForm({ ...form, vehicle_type_id: e.target.value })}>
+              <select
+                required
+                value={form.vehicle_type_id}
+                onChange={(e) => setForm({ ...form, vehicle_type_id: e.target.value })}
+              >
                 <option value="">Select vehicle type</option>
-                {vehicleTypes.map(v => <option key={v.vehicle_type_id} value={v.vehicle_type_id}>{v.vehicle_name}</option>)}
+                {vehicleTypes.map((vehicle) => (
+                  <option key={vehicle.vehicle_type_id} value={vehicle.vehicle_type_id}>
+                    {vehicle.vehicle_name}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
@@ -146,11 +183,15 @@ export default function AddBooking() {
           <div className="cc-form-row">
             <div className="cc-form-group">
               <label>Vehicle Number Plate</label>
-              <input value={form.vehicle_number} onChange={e => setForm({ ...form, vehicle_number: e.target.value })} placeholder="e.g. KA 09 AB 1234" />
+              <input
+                value={form.vehicle_number}
+                onChange={(e) => setForm({ ...form, vehicle_number: e.target.value })}
+                placeholder="e.g. KA 09 AB 1234"
+              />
             </div>
             <div className="cc-form-group">
               <label>Status</label>
-              <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}>
+              <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
                 <option value="pending">Pending</option>
                 <option value="confirmed">Confirmed</option>
                 <option value="completed">Completed</option>
@@ -162,62 +203,91 @@ export default function AddBooking() {
           <div className="cc-form-row">
             <div className="cc-form-group">
               <label>Appointment Date</label>
-              <input required type="date" value={form.appointment_date}
-                onChange={e => setForm({ ...form, appointment_date: e.target.value, staff_id: "" })} />
+              <input
+                required
+                type="date"
+                value={form.appointment_date}
+                onChange={(e) => setForm({ ...form, appointment_date: e.target.value, staff_id: "" })}
+              />
             </div>
             <div className="cc-form-group">
               <label>Appointment Time</label>
-              <input required type="time" value={form.appointment_time} onChange={e => setForm({ ...form, appointment_time: e.target.value })} />
+              <input
+                required
+                type="time"
+                value={form.appointment_time}
+                onChange={(e) => setForm({ ...form, appointment_time: e.target.value })}
+              />
             </div>
           </div>
 
           <div className="cc-form-row">
             <div className="cc-form-group">
               <label>Assign Staff</label>
-              <select value={form.staff_id} onChange={e => setForm({ ...form, staff_id: e.target.value })}
-                disabled={!form.appointment_date}>
+              <select
+                value={form.staff_id}
+                onChange={(e) => setForm({ ...form, staff_id: e.target.value })}
+                disabled={!form.appointment_date}
+              >
                 <option value="">{form.appointment_date ? "Unassigned" : "Select a date first"}</option>
-                {availableStaff.map(s => (
-                  <option key={s.staff_id} value={s.staff_id}>
-                    {s.name}{s.role ? ` — ${s.role}` : ""}
+                {availableStaff.map((staff) => (
+                  <option key={staff.staff_id} value={staff.staff_id}>
+                    {staff.name}
+                    {staff.role ? ` - ${staff.role}` : ""}
                   </option>
                 ))}
               </select>
               {form.appointment_date && availableStaff.length === 0 && (
-                <small style={{ color: "#94a3b8" }}>No staff available on this date</small>
+                <small className="cc-form-note">No staff available on this date.</small>
               )}
             </div>
-            <div className="cc-form-group" />
-          </div>
-
-          <div className="cc-form-row">
             <div className="cc-form-group">
               <label>Payment Mode</label>
-              <select value={form.payment_mode} onChange={e => setForm({ ...form, payment_mode: e.target.value })}>
-                <option value="">Select</option>
+              <select
+                value={form.payment_mode}
+                onChange={(e) => setForm({ ...form, payment_mode: e.target.value })}
+              >
+                <option value="">Select payment mode</option>
                 <option value="cash">Cash</option>
                 <option value="upi">UPI</option>
                 <option value="card">Card</option>
               </select>
             </div>
-            <div className="cc-form-group">
-              <label>Total Amount (₹)</label>
-              <input type="number" value={form.payment_total} onChange={e => setForm({ ...form, payment_total: e.target.value })} placeholder="0" />
-            </div>
           </div>
 
           <div className="cc-form-row">
             <div className="cc-form-group">
-              <label>Amount Paid (₹)</label>
-              <input type="number" value={form.payment_paid} onChange={e => setForm({ ...form, payment_paid: e.target.value })} placeholder="0" />
+              <label>Total Amount</label>
+              <input
+                type="number"
+                value={form.payment_total}
+                onChange={(e) => setForm({ ...form, payment_total: e.target.value })}
+                placeholder="0"
+              />
             </div>
             <div className="cc-form-group">
-              <label>Notes</label>
-              <input value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} placeholder="Optional notes" />
+              <label>Amount Paid</label>
+              <input
+                type="number"
+                value={form.payment_paid}
+                onChange={(e) => setForm({ ...form, payment_paid: e.target.value })}
+                placeholder="0"
+              />
             </div>
           </div>
 
-          <button type="submit" className="cc-btn-submit">Book Appointment</button>
+          <div className="cc-form-group">
+            <label>Notes</label>
+            <textarea
+              value={form.notes}
+              onChange={(e) => setForm({ ...form, notes: e.target.value })}
+              placeholder="Optional booking notes"
+            />
+          </div>
+
+          <button type="submit" className="cc-btn-submit">
+            Book Appointment
+          </button>
         </form>
       </div>
     </div>

@@ -17,7 +17,9 @@ export default function TodaysBookings() {
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => { fetchBookings(); }, []);
+  useEffect(() => {
+    fetchBookings();
+  }, []);
 
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this appointment?")) return;
@@ -25,45 +27,88 @@ export default function TodaysBookings() {
     fetchBookings();
   };
 
-  const statusClass = (s) => {
-    const map = { pending: "badge-pending", confirmed: "badge-confirmed", completed: "badge-completed", cancelled: "badge-cancelled" };
-    return map[s] || "badge-pending";
+  const statusClass = (status) => {
+    const map = {
+      pending: "badge-pending",
+      confirmed: "badge-confirmed",
+      completed: "badge-completed",
+      cancelled: "badge-cancelled",
+    };
+    return map[status] || "badge-pending";
   };
 
   return (
-    <div>
-      <div className="page-title">Today's Appointments</div>
-      <div className="page-sub">{new Date().toDateString()} · {bookings.length} appointment(s)</div>
+    <div className="page-shell">
+      <section className="page-header">
+        <div className="page-header-copy">
+          <span className="page-eyebrow">Daily queue</span>
+          <h1 className="page-title">Today&apos;s appointments</h1>
+          <p className="page-sub">
+            {new Date().toDateString()} with {bookings.length} scheduled wash appointment
+            {bookings.length === 1 ? "" : "s"}.
+          </p>
+        </div>
+      </section>
 
       <div className="cc-table-wrap">
         <table className="cc-table">
           <thead>
             <tr>
-              <th>#</th><th>Time</th><th>Customer</th><th>Phone</th>
-              <th>Vehicle</th><th>Plate</th><th>Package</th><th>Staff</th><th>Status</th><th>Amount</th><th>Actions</th>
+              <th>#</th>
+              <th>Time</th>
+              <th>Customer</th>
+              <th>Phone</th>
+              <th>Vehicle</th>
+              <th>Plate</th>
+              <th>Package</th>
+              <th>Staff</th>
+              <th>Status</th>
+              <th>Amount</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={11} className="cc-table-empty">Loading...</td></tr>
+              <tr>
+                <td colSpan={11} className="cc-table-empty">
+                  Loading...
+                </td>
+              </tr>
             ) : bookings.length === 0 ? (
-              <tr><td colSpan={11} className="cc-table-empty">No appointments for today.</td></tr>
+              <tr>
+                <td colSpan={11} className="cc-table-empty">
+                  No appointments for today.
+                </td>
+              </tr>
             ) : (
-              bookings.map(b => (
-                <tr key={b.booking_id}>
-                  <td>{b.booking_id}</td>
-                  <td>{b.appointment_time}</td>
-                  <td>{b.customer_name}</td>
-                  <td>{b.customer_phone}</td>
-                  <td>{b.vehicle_type_name}</td>
-                  <td>{b.vehicle_number || "—"}</td>
-                  <td>{b.package_name}</td>
-                  <td>{b.staff_name || "—"}</td>
-                  <td><span className={`dash-status-badge ${statusClass(b.status)}`}>{b.status}</span></td>
-                  <td>₹{b.payment_total || 0}</td>
-                  <td style={{ display: "flex", gap: "0.4rem" }}>
-                    <button className="action-btn btn-edit" onClick={() => setEditingBooking(b)}>Edit</button>
-                    <button className="action-btn btn-delete" onClick={() => handleDelete(b.booking_id)}>Delete</button>
+              bookings.map((booking) => (
+                <tr key={booking.booking_id}>
+                  <td>{booking.booking_id}</td>
+                  <td>{booking.appointment_time}</td>
+                  <td>{booking.customer_name}</td>
+                  <td>{booking.customer_phone}</td>
+                  <td>{booking.vehicle_type_name}</td>
+                  <td>{booking.vehicle_number || "-"}</td>
+                  <td>{booking.package_name}</td>
+                  <td>{booking.staff_name || "-"}</td>
+                  <td>
+                    <span className={`dash-status-badge ${statusClass(booking.status)}`}>
+                      {booking.status}
+                    </span>
+                  </td>
+                  <td>Rs {booking.payment_total || 0}</td>
+                  <td>
+                    <div className="cc-inline-actions">
+                      <button className="action-btn btn-edit" onClick={() => setEditingBooking(booking)}>
+                        Edit
+                      </button>
+                      <button
+                        className="action-btn btn-delete"
+                        onClick={() => handleDelete(booking.booking_id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))
@@ -76,7 +121,10 @@ export default function TodaysBookings() {
         <BookingEditModal
           booking={editingBooking}
           onClose={() => setEditingBooking(null)}
-          onSaved={() => { setEditingBooking(null); fetchBookings(); }}
+          onSaved={() => {
+            setEditingBooking(null);
+            fetchBookings();
+          }}
         />
       )}
     </div>

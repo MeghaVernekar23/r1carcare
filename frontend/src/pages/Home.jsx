@@ -2,381 +2,372 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/Home.css";
 
-/* ── SVG icon components ─────────────────────────────── */
-const IconWash = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M7 16.5c0 1.1.9 2 2 2h6c1.1 0 2-.9 2-2V10l-2-5H9L7 10v6.5z"/>
-    <path d="M7 12h10"/><path d="M10 5l-.5-2"/><path d="M14 5l.5-2"/>
-    <path d="M4 19c0 1 .5 2 1.5 2s1.5-1 1.5-2-.5-2-1.5-2S4 18 4 19z"/>
-    <path d="M17 19c0 1 .5 2 1.5 2s1.5-1 1.5-2-.5-2-1.5-2-1.5 1-1.5 2z"/>
-  </svg>
-);
-const IconInterior = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="3" width="18" height="18" rx="3"/>
-    <path d="M3 9h18"/><path d="M9 21V9"/><path d="M15 15h2"/><path d="M15 12h2"/>
-  </svg>
-);
-const IconPolish = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>
-  </svg>
-);
-const IconCeramic = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-  </svg>
-);
-const IconBike = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/>
-    <path d="M15 6h-5l-2 5.5h9.5L15 6z"/><path d="M5.5 17.5L9 11.5"/><path d="M18.5 17.5L15 6"/>
-    <path d="M11 6V4h3"/>
-  </svg>
-);
-const IconSUV = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M2 17h20v2a1 1 0 01-1 1H3a1 1 0 01-1-1v-2z"/>
-    <path d="M2 17l2-7h16l2 7"/>
-    <path d="M6 10l2-4h8l2 4"/>
-    <circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>
-  </svg>
-);
-
 const services = [
-  { Icon: IconWash,     title: "Exterior Wash",      desc: "Full exterior rinse, hand dry, and tyre clean for a spotless finish every time." },
-  { Icon: IconInterior, title: "Interior Detailing",  desc: "Deep vacuum, dashboard wipe-down, and upholstery care for a fresh cabin." },
-  { Icon: IconPolish,   title: "Wax & Polish",        desc: "Paint protection with premium wax and machine polish for a showroom shine." },
-  { Icon: IconCeramic,  title: "Ceramic Coating",     desc: "Long-lasting ceramic nano-coating for superior paint protection and hydrophobics." },
-  { Icon: IconBike,     title: "Bike Wash",           desc: "Complete two-wheeler wash, degreasing, and tyre dressing service." },
-  { Icon: IconSUV,      title: "SUV & Luxury",        desc: "Specialised packages for SUVs, MPVs, and luxury vehicles with extra care." },
+  {
+    eyebrow: "Foam Bay",
+    title: "Exterior Foam Wash",
+    desc: "Snow-foam pre-soak, pressure rinse, wheel-face cleaning, and hand drying for an instant fresh-wash finish.",
+  },
+  {
+    eyebrow: "Cabin Reset",
+    title: "Interior Cleaning",
+    desc: "Vacuuming, mat cleanup, dash wipe-down, and glass cleaning to remove dust, crumbs, and daily grime.",
+  },
+  {
+    eyebrow: "Gloss Boost",
+    title: "Wax And Shine",
+    desc: "Quick wax protection and gloss enhancement for customers who want more shine after the wash.",
+  },
+  {
+    eyebrow: "Add-On Protection",
+    title: "Ceramic Top Coat",
+    desc: "Hydrophobic protection that helps water bead off and keeps routine wash maintenance easier.",
+  },
 ];
 
 const highlights = [
-  { num: "2000+", label: "Cars Washed" },
-  { num: "500+",  label: "Happy Customers" },
-  { num: "8",     label: "Wash Packages" },
-  { num: "4.9",   label: "Average Rating" },
+  { value: "30 min", label: "express wash turnaround" },
+  { value: "4.9/5", label: "local customer rating" },
+  { value: "2,000+", label: "cars and bikes cleaned" },
 ];
 
 const packages = [
-  { name: "Basic Wash",    price: 199,  desc: "Exterior rinse + hand dry",                               featured: false },
-  { name: "Standard Wash", price: 399,  desc: "Exterior + interior vacuum + wipe down",                  featured: false },
-  { name: "Premium Wash",  price: 599,  desc: "Standard + tyre shine + window clean",                    featured: true, badge: "Popular" },
-  { name: "Deluxe Wash",   price: 899,  desc: "Premium + engine bay + air freshener",                    featured: false },
-  { name: "Full Detail",   price: 1499, desc: "Deluxe + clay bar + wax polish + deep interior",          featured: false },
-  { name: "Ceramic Coat",  price: 3999, desc: "Full Detail + long-term ceramic protection",              featured: false },
+  {
+    name: "Quick Wash",
+    price: 199,
+    blurb: "Fast exterior clean for regular upkeep.",
+    points: ["Foam rinse", "Hand dry", "Tyre dressing"],
+  },
+  {
+    name: "Full Wash",
+    price: 599,
+    blurb: "The most-booked wash package for weekly care.",
+    featured: true,
+    points: ["Interior vacuum", "Glass cleanup", "Dashboard wipe", "Tyre shine"],
+  },
+  {
+    name: "Wash Plus Detail",
+    price: 1499,
+    blurb: "Deep clean before trips, events, or resale prep.",
+    points: ["Wax finish", "Deep interior clean", "Engine bay cleanup"],
+  },
 ];
 
 const steps = [
-  { num: "01", title: "Book Online",           desc: "Choose your package, vehicle type, and preferred date & time slot." },
-  { num: "02", title: "Drop Your Vehicle",     desc: "Arrive at our facility — our team will do a pre-wash inspection." },
-  { num: "03", title: "We Do the Work",        desc: "Expert technicians work through your package with professional equipment." },
-  { num: "04", title: "Drive Away Clean",      desc: "Collect your sparkling vehicle and enjoy the ride!" },
+  {
+    step: "01",
+    title: "Choose a slot",
+    desc: "Pick your wash package, vehicle type, and preferred time slot.",
+  },
+  {
+    step: "02",
+    title: "Arrive at the bay",
+    desc: "We confirm the booking, inspect the car quickly, and queue the correct wash workflow.",
+  },
+  {
+    step: "03",
+    title: "Wash and finish",
+    desc: "The team runs foam wash, wheel cleaning, drying, and any selected interior or wax add-ons.",
+  },
+  {
+    step: "04",
+    title: "Collect and drive",
+    desc: "Leave with a clean, dry vehicle after the final wipe and finish check.",
+  },
 ];
 
 const testimonials = [
-  { name: "Arjun K.",  initial: "A", text: "My car looked brand new after the Full Detail package. The attention to detail is exceptional. Will definitely be a regular customer!" },
-  { name: "Sneha R.",  initial: "S", text: "Booked online in 2 minutes, dropped my car, and it was ready in an hour. The Premium Wash is totally worth it." },
-  { name: "Vikram P.", initial: "V", text: "Got the ceramic coating done. Six months on, the car still repels water like day one. Outstanding work by the R1 team." },
+  {
+    name: "Arjun K.",
+    quote:
+      "The foam wash and wheel cleaning made the car look fresh without keeping me waiting half the day.",
+  },
+  {
+    name: "Sneha R.",
+    quote:
+      "Booking was simple, the slot started on time, and the interior cleanup made the cabin feel properly reset.",
+  },
+  {
+    name: "Vikram P.",
+    quote:
+      "I came in for a wash and added the protection coat. Water still beads off properly after weeks.",
+  },
 ];
 
-/* ── Fade-in on scroll hook ─────────────────────────────── */
 function useFadeIn() {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
+
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect(); } },
-      { threshold: 0.12 }
+    const element = ref.current;
+    if (!element) return undefined;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.16 }
     );
-    obs.observe(el);
-    return () => obs.disconnect();
+
+    observer.observe(element);
+    return () => observer.disconnect();
   }, []);
+
   return [ref, visible];
 }
 
-function FadeSection({ children, className = "", style = {}, delay = 0 }) {
+function FadeSection({ children, className = "", delay = 0 }) {
   const [ref, visible] = useFadeIn();
+
   return (
     <div
       ref={ref}
-      className={`fade-section${visible ? " fade-in" : ""} ${className}`}
-      style={{ transitionDelay: `${delay}ms`, ...style }}
+      className={`home-fade ${visible ? "is-visible" : ""} ${className}`.trim()}
+      style={{ transitionDelay: `${delay}ms` }}
     >
       {children}
     </div>
   );
 }
 
-/* ── Component ──────────────────────────────────────────── */
-export default function Home() {
+function Home() {
   const navigate = useNavigate();
 
   return (
-    <div className="cc-root">
+    <div className="home-shell">
+      <header className="home-nav">
+        <button className="home-brand" type="button" onClick={() => navigate("/")}>
+          <span className="home-brand-mark">R1</span>
+          <span className="home-brand-text">
+            <strong>R1 Car Care</strong>
+            <small>Foam wash, interior clean, and booking desk</small>
+          </span>
+        </button>
 
-      {/* ── NAVBAR ── */}
-      <header className="cc-nav">
-        <div className="cc-nav-brand">
-          <div className="cc-nav-logo">
-            <svg viewBox="0 0 32 32" fill="none">
-              <rect width="32" height="32" rx="8" fill="#1d4ed8"/>
-              <path d="M8 22l3-8h10l3 8" stroke="#fff" strokeWidth="2" strokeLinejoin="round"/>
-              <path d="M8 22h16" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
-              <circle cx="11" cy="22" r="2" fill="#fff"/>
-              <circle cx="21" cy="22" r="2" fill="#fff"/>
-              <path d="M11 14l1.5-4h7l1.5 4" stroke="#93c5fd" strokeWidth="1.5" strokeLinejoin="round"/>
-            </svg>
-          </div>
-          <span><span className="brand-r1">R1</span> Car Care</span>
-        </div>
-        <nav className="cc-nav-links">
+        <nav className="home-nav-links">
           <a href="#services">Services</a>
           <a href="#packages">Packages</a>
-          <a href="#gallery">Gallery</a>
-          <a href="#contact">Contact</a>
+          <a href="#process">Process</a>
+          <a href="#reviews">Reviews</a>
         </nav>
-        <div className="cc-nav-actions">
-          <button className="cc-btn-outline" onClick={() => navigate("/booknow")}>Book Now</button>
-          <button className="cc-btn-primary" onClick={() => navigate("/login")}>Staff Login</button>
+
+        <div className="home-nav-actions">
+          <button className="home-btn home-btn-muted" onClick={() => navigate("/login")}>
+            Staff Login
+          </button>
+          <button className="home-btn home-btn-primary" onClick={() => navigate("/booknow")}>
+            Book Now
+          </button>
         </div>
       </header>
 
-      {/* ── HERO ── */}
-      <section className="cc-hero">
-        <div className="cc-hero-bg">
-          <div className="cc-hero-blob cc-hero-blob-1" />
-          <div className="cc-hero-blob cc-hero-blob-2" />
-          <div className="cc-hero-blob cc-hero-blob-3" />
-        </div>
-        <div className="cc-hero-inner">
-          <div className="cc-hero-text hero-animate">
-            <div className="cc-hero-badges">
-              <span className="cc-badge cc-badge-blue">Mysuru's Premier Car Care</span>
-              <span className="cc-badge cc-badge-outline">Packages from ₹199</span>
+      <main>
+        <section className="home-hero">
+          <div className="home-hero-grid">
+            <div className="home-hero-copy">
+              <span className="home-kicker">Mysuru foam wash and car cleaning</span>
+              <h1>Fast car wash service with a cleaner, sharper finish.</h1>
+              <p>
+                R1 is built around repeatable car wash workflows: foam pre-soak, wheel cleaning,
+                hand drying, interior reset, and optional shine protection with quick online booking.
+              </p>
+
+              <div className="home-hero-actions">
+                <button className="home-btn home-btn-primary home-btn-large" onClick={() => navigate("/booknow")}>
+                  Reserve a Slot
+                </button>
+                <a className="home-btn home-btn-outline home-btn-large" href="#packages">
+                  Compare Packages
+                </a>
+              </div>
+
+              <div className="home-highlight-row">
+                {highlights.map((item) => (
+                  <div key={item.label} className="home-highlight">
+                    <strong>{item.value}</strong>
+                    <span>{item.label}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-            <h1>
-              Your Car Deserves<br />
-              <span className="cc-gradient-text">The Best Clean</span>
-            </h1>
-            <p className="cc-hero-sub">
-              Professional car wash and detailing services with premium equipment.
-              From a quick rinse to full ceramic coating — we keep your ride immaculate.
-            </p>
-            <div className="cc-hero-btns">
-              <button className="cc-btn-hero-primary" onClick={() => navigate("/booknow")}>
-                Book Your Slot
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </button>
-              <a href="#packages" className="cc-btn-hero-ghost">View Packages</a>
+
+            <div className="home-hero-stage">
+              <div className="home-stage-card home-stage-card-main">
+                <div className="home-stage-topline">Today in the wash bay</div>
+                <div className="home-stage-metric">
+                  <span>14</span>
+                  <small>confirmed wash bookings</small>
+                </div>
+                <div className="home-stage-badges">
+                  <span>Foam pre-wash</span>
+                  <span>Wheel cleanup</span>
+                  <span>Hand dry finish</span>
+                </div>
+                <ul className="home-stage-list">
+                  <li>Exterior and interior stations separated for faster wash turnaround</li>
+                  <li>Dedicated wash handling for hatchbacks, SUVs, bikes, and premium cars</li>
+                  <li>Online booking plus staff dashboard keeps the queue under control</li>
+                </ul>
+              </div>
+
+              <div className="home-stage-card home-stage-card-accent">
+                <span className="home-stage-chip">Most booked</span>
+                <h2>Full Wash</h2>
+                <p>Foam wash, interior vacuum, glass cleanup, dashboard wipe, and tyre shine.</p>
+                <strong>From Rs 599</strong>
+              </div>
             </div>
           </div>
+        </section>
 
-          <div className="cc-hero-card hero-animate hero-animate-delay">
-            <div className="cc-hero-card-header">
-              <div className="cc-hero-card-dot cc-dot-green" />
-              <div className="cc-hero-card-dot cc-dot-yellow" />
-              <div className="cc-hero-card-dot cc-dot-red" />
-              <span className="cc-hero-card-title">Premium Car Care Center</span>
+        <section className="home-marquee">
+          <div className="home-marquee-track">
+            <span>Foam wash</span>
+            <span>Wheel cleaning</span>
+            <span>Interior vacuum</span>
+            <span>Paint-safe soap</span>
+            <span>Express wash slots</span>
+            <span>Hand dry finish</span>
+          </div>
+        </section>
+
+        <section className="home-section home-section-dark" id="services">
+          <div className="home-section-head">
+            <span className="home-kicker">Services</span>
+            <h2>Built around what customers expect from a proper car wash.</h2>
+          </div>
+
+          <div className="home-service-grid">
+            {services.map((service, index) => (
+              <FadeSection key={service.title} className="home-service-card" delay={index * 70}>
+                <span>{service.eyebrow}</span>
+                <h3>{service.title}</h3>
+                <p>{service.desc}</p>
+              </FadeSection>
+            ))}
+          </div>
+        </section>
+
+        <section className="home-section home-section-split" id="packages">
+          <FadeSection className="home-section-copy">
+            <span className="home-kicker">Packages</span>
+            <h2>Three wash packages that are easy to choose fast.</h2>
+            <p>
+              The booking flow can handle more combinations, but the homepage should make the first
+              decision obvious: quick wash, full wash, or a wash with deeper detailing.
+            </p>
+            <button className="home-btn home-btn-primary" onClick={() => navigate("/booknow")}>
+              Start Booking
+            </button>
+          </FadeSection>
+
+          <div className="home-package-stack">
+            {packages.map((pkg, index) => (
+              <FadeSection
+                key={pkg.name}
+                className={`home-package-card ${pkg.featured ? "is-featured" : ""}`}
+                delay={index * 90}
+              >
+                <div className="home-package-header">
+                  <div>
+                    <h3>{pkg.name}</h3>
+                    <p>{pkg.blurb}</p>
+                  </div>
+                  <strong>Rs {pkg.price}</strong>
+                </div>
+                <div className="home-package-points">
+                  {pkg.points.map((point) => (
+                    <span key={point}>{point}</span>
+                  ))}
+                </div>
+              </FadeSection>
+            ))}
+          </div>
+        </section>
+
+        <section className="home-section home-process" id="process">
+          <div className="home-section-head">
+            <span className="home-kicker">Process</span>
+            <h2>Fast to book, clear in the bay, consistent at pickup.</h2>
+          </div>
+
+          <div className="home-process-grid">
+            {steps.map((item, index) => (
+              <FadeSection key={item.step} className="home-process-card" delay={index * 80}>
+                <strong>{item.step}</strong>
+                <h3>{item.title}</h3>
+                <p>{item.desc}</p>
+              </FadeSection>
+            ))}
+          </div>
+        </section>
+
+        <section className="home-section home-proof">
+          <FadeSection className="home-proof-panel">
+            <span className="home-kicker">Why people return</span>
+            <h2>A local car wash homepage that actually feels like a car wash brand.</h2>
+            <p>
+              The page now pushes the wash-first story up front: bays, foam, wheels, drying, quick
+              slots, and package clarity instead of reading like a generic premium service template.
+            </p>
+          </FadeSection>
+
+          <FadeSection className="home-proof-grid" delay={80}>
+            <div>
+              <strong>Express-friendly</strong>
+              <p>Walk-ins still work, but booked customers lock in the wash slot they actually want.</p>
             </div>
-            <ul className="cc-hero-card-list">
-              {["All vehicle types accepted","Professional equipment","Trained technicians","Flexible time slots","Express wash available"].map(item => (
-                <li key={item}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <div className="cc-hero-card-divider" />
-            <div className="cc-hero-card-price">
-              Starting at <strong>₹199</strong> · Basic Wash
+            <div>
+              <strong>Vehicle-based wash flow</strong>
+              <p>Bike, hatchback, sedan, and SUV cleaning can map cleanly to the available wash tiers.</p>
             </div>
-            <button className="cc-btn-primary cc-btn-block" onClick={() => navigate("/booknow")}>
-              Check Availability
+            <div>
+              <strong>Booking-led operation</strong>
+              <p>The staff login remains visible, but the main journey clearly prioritizes wash booking.</p>
+            </div>
+          </FadeSection>
+        </section>
+
+        <section className="home-section home-reviews" id="reviews">
+          <div className="home-section-head">
+            <span className="home-kicker">Reviews</span>
+            <h2>Customers remember clean wheels, dry panels, and on-time slots.</h2>
+          </div>
+
+          <div className="home-review-grid">
+            {testimonials.map((item, index) => (
+              <FadeSection key={item.name} className="home-review-card" delay={index * 70}>
+                <p>"{item.quote}"</p>
+                <strong>{item.name}</strong>
+              </FadeSection>
+            ))}
+          </div>
+        </section>
+
+        <section className="home-cta">
+          <div>
+            <span className="home-kicker">Ready to book</span>
+            <h2>Reserve your wash in under two minutes.</h2>
+            <p>
+              Call for quick questions or go straight to the booking flow for time-slot availability.
+            </p>
+          </div>
+
+          <div className="home-cta-actions">
+            <a className="home-btn home-btn-outline-dark" href="tel:+919876543210">
+              Call +91 98765 43210
+            </a>
+            <button className="home-btn home-btn-primary" onClick={() => navigate("/booknow")}>
+              Book Online
             </button>
           </div>
-        </div>
-
-        <div className="cc-hero-scroll-hint">
-          <div className="cc-scroll-mouse"><div className="cc-scroll-dot" /></div>
-        </div>
-      </section>
-
-      {/* ── STATS ── */}
-      <section className="cc-stats">
-        {highlights.map((h, i) => (
-          <FadeSection key={h.label} className="cc-stat" delay={i * 80}>
-            <span className="cc-stat-num">{h.num}</span>
-            <span className="cc-stat-label">{h.label}</span>
-          </FadeSection>
-        ))}
-      </section>
-
-      {/* ── SERVICES ── */}
-      <section id="services" className="cc-section">
-        <div className="cc-container">
-          <FadeSection className="cc-section-head">
-            <span className="cc-label-tag">What We Offer</span>
-            <h2>Complete Car Care, <span className="cc-gradient-text">One Stop</span></h2>
-            <p>From a quick exterior wash to a full ceramic coat — we do it all.</p>
-          </FadeSection>
-          <div className="cc-services-grid">
-            {services.map(({ Icon, title, desc }, i) => (
-              <FadeSection key={title} className="cc-service-card" delay={i * 60}>
-                <div className="cc-service-icon-wrap">
-                  <Icon />
-                </div>
-                <h3>{title}</h3>
-                <p>{desc}</p>
-              </FadeSection>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── PACKAGES ── */}
-      <section id="packages" className="cc-packages-section">
-        <div className="cc-container">
-          <FadeSection className="cc-section-head">
-            <span className="cc-label-tag">Pricing</span>
-            <h2>Pick Your <span className="cc-gradient-text">Package</span></h2>
-            <p>Transparent pricing, no hidden charges.</p>
-          </FadeSection>
-          <div className="cc-packages-grid">
-            {packages.map((p, i) => (
-              <FadeSection key={p.name} className={`cc-pkg-card${p.featured ? " featured" : ""}`} delay={i * 60}>
-                {p.badge && <div className="cc-pkg-badge">{p.badge}</div>}
-                <div className="cc-pkg-name">{p.name}</div>
-                <div className="cc-pkg-price">₹{p.price} <span>/ car</span></div>
-                <div className="cc-pkg-desc">{p.desc}</div>
-                <button
-                  className={`cc-pkg-btn${p.featured ? " cc-pkg-btn-featured" : ""}`}
-                  onClick={() => navigate("/booknow")}
-                >
-                  Book This
-                </button>
-              </FadeSection>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── HOW IT WORKS ── */}
-      <section className="cc-section" id="how">
-        <div className="cc-container">
-          <FadeSection className="cc-section-head">
-            <span className="cc-label-tag">Process</span>
-            <h2>How It <span className="cc-gradient-text">Works</span></h2>
-            <p>Four simple steps to a spotless car.</p>
-          </FadeSection>
-          <div className="cc-steps">
-            {steps.map((s, i) => (
-              <FadeSection key={s.num} className="cc-step" delay={i * 80}>
-                <div className="cc-step-num">{s.num}</div>
-                <h3>{s.title}</h3>
-                <p>{s.desc}</p>
-                {i < steps.length - 1 && <div className="cc-step-arrow" />}
-              </FadeSection>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── GALLERY ── */}
-      <section id="gallery" className="cc-gallery-section">
-        <div className="cc-container">
-          <FadeSection className="cc-section-head">
-            <span className="cc-label-tag">Gallery</span>
-            <h2>Freshly Washed, <span className="cc-gradient-text">Every Time</span></h2>
-            <p>Real results from our detailing centre.</p>
-          </FadeSection>
-          <FadeSection className="cc-gallery-grid">
-            <div className="cc-gallery-item cc-gallery-tall">
-              <img src="https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?w=800&q=85" alt="Full detail" loading="lazy" />
-              <div className="cc-gallery-overlay"><span>Full Detail</span></div>
-            </div>
-            <div className="cc-gallery-item">
-              <img src="https://images.unsplash.com/photo-1601362840469-51e4d8d58785?w=600&q=85" alt="Interior detailing" loading="lazy" />
-              <div className="cc-gallery-overlay"><span>Interior Detail</span></div>
-            </div>
-            <div className="cc-gallery-item">
-              <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&q=85" alt="Shiny car" loading="lazy" />
-              <div className="cc-gallery-overlay"><span>Ceramic Coat</span></div>
-            </div>
-            <div className="cc-gallery-item">
-              <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=85" alt="Wax polish" loading="lazy" />
-              <div className="cc-gallery-overlay"><span>Wax Polish</span></div>
-            </div>
-            <div className="cc-gallery-item">
-              <img src="https://images.unsplash.com/photo-1617469767886-b3f0e9b4bfc4?w=600&q=85" alt="Engine bay" loading="lazy" />
-              <div className="cc-gallery-overlay"><span>Engine Bay</span></div>
-            </div>
-          </FadeSection>
-          <div className="cc-gallery-cta">
-            <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" className="cc-btn-outline-dark">
-              See More on Instagram
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* ── TESTIMONIALS ── */}
-      <section className="cc-section cc-testi-section" id="testimonials">
-        <div className="cc-container">
-          <FadeSection className="cc-section-head">
-            <span className="cc-label-tag">Reviews</span>
-            <h2>Trusted by <span className="cc-gradient-text">Car Enthusiasts</span></h2>
-            <p>Hear from our happy customers.</p>
-          </FadeSection>
-          <div className="cc-testi-grid">
-            {testimonials.map((t, i) => (
-              <FadeSection key={t.name} className="cc-testi-card" delay={i * 80}>
-                <div className="cc-testi-stars">★★★★★</div>
-                <p className="cc-testi-text">"{t.text}"</p>
-                <div className="cc-testi-author">
-                  <div className="cc-testi-avatar">{t.initial}</div>
-                  <span>{t.name}</span>
-                </div>
-              </FadeSection>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── CTA ── */}
-      <section className="cc-cta" id="contact">
-        <div className="cc-cta-bg">
-          <div className="cc-cta-blob cc-cta-blob-1" />
-          <div className="cc-cta-blob cc-cta-blob-2" />
-        </div>
-        <FadeSection className="cc-cta-inner">
-          <h2>Ready for a Gleaming Car?</h2>
-          <p>Book your slot online in under 2 minutes. Walk-ins welcome — but online booking guarantees your preferred time.</p>
-          <div className="cc-cta-btns">
-            <a href="tel:+919876543210" className="cc-btn-hero-primary" style={{ textDecoration: "none" }}>
-              Call Us — +91 98765 43210
-            </a>
-            <button className="cc-btn-hero-ghost" onClick={() => navigate("/booknow")}>Book Now</button>
-          </div>
-          <p className="cc-cta-address">
-            12, Industrial Layout, Near Ring Road, Vijayanagar, Mysuru – 570 017
-          </p>
-        </FadeSection>
-      </section>
-
-      {/* ── FOOTER ── */}
-      <footer className="cc-footer">
-        <div className="cc-footer-brand"><span className="brand-r1">R1</span> Car Care</div>
-        <div className="cc-footer-info">
-          <p>12, Industrial Layout, Near Ring Road, Vijayanagar, Mysuru – 570 017</p>
-          <p><a href="tel:+919876543210">+91 98765 43210</a></p>
-        </div>
-        <p className="cc-footer-copy">© {new Date().getFullYear()} R1 Car Care · All rights reserved.</p>
-      </footer>
-
+        </section>
+      </main>
     </div>
   );
 }
+
+export default Home;

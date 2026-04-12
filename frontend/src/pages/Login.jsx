@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { ChevronLeft } from "lucide-react";
 import "../css/Login.css";
 import { apiRequest } from "../utils/APIrequest";
 import { useNavigate } from "react-router-dom";
@@ -43,14 +44,50 @@ function Login() {
 
   return (
     <div className="login-page">
-      <div className="login-card">
-        {/* Form panel */}
-        <div className="login-form-panel">
-          <div className="login-brand"><span className="brand-r1">R1</span> Car Care</div>
-          <h1 className="login-title">Welcome back</h1>
-          <p className="login-subtitle">Sign in to your R1 Car Care staff account</p>
+      <div className="login-layout login-layout-simple">
+        <section className="login-showcase" aria-hidden="true">
+          <div className="login-showcase-brand">
+            <span className="login-showcase-mark">R1</span>
+            <div>
+              <strong>R1 Car Care</strong>
+              <small>Staff dashboard</small>
+            </div>
+          </div>
 
-          <form onSubmit={handleSubmit} noValidate>
+          <div className="login-showcase-copy">
+            <span className="login-kicker">Secure access</span>
+            <h1>Simple staff login for daily wash operations.</h1>
+            <p>Sign in to manage bookings, customers, packages, and the wash queue.</p>
+          </div>
+
+          <div className="login-showcase-note">
+            <strong>Staff only</strong>
+            <span>Use your assigned credentials to continue.</span>
+          </div>
+        </section>
+
+        <section className="login-panel">
+          <button className="login-back" type="button" onClick={() => navigate("/")}>
+            <ChevronLeft size={16} />
+            <span>Back to homepage</span>
+          </button>
+
+          <div className="login-panel-head">
+            <div className="login-brand">
+              <span className="login-brand-mark">R1</span>
+              <div>
+                <strong>R1 Car Care</strong>
+                <small>Staff sign in</small>
+              </div>
+            </div>
+
+            <div>
+              <h2 className="login-title">Login</h2>
+              <p className="login-subtitle">Enter your username and password to open the dashboard.</p>
+            </div>
+          </div>
+
+          <form className="login-form" onSubmit={handleSubmit} noValidate>
             <div className="form-group">
               <label htmlFor="username">Username</label>
               <input
@@ -78,27 +115,19 @@ function Login() {
             </div>
 
             {errorMessage && (
-              <div className="login-error" role="alert">{errorMessage}</div>
+              <div className="login-error" role="alert">
+                {errorMessage}
+              </div>
             )}
 
             <div className="login-actions">
-              <button className="btn-login" type="submit">Sign In</button>
-              <a className="forgot-link" href="#!">Forgot password?</a>
+              <button className="btn-login" type="submit">
+                Sign In
+              </button>
+              <span className="login-help">Staff access only</span>
             </div>
           </form>
-        </div>
-
-        {/* Banner panel */}
-        <div
-          className="login-banner"
-          style={{ backgroundImage: `url(https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?w=800&q=80)` }}
-          aria-hidden="true"
-        >
-          <div className="login-banner-overlay">
-            <h2>Drive Away Gleaming</h2>
-            <p>Professional car care, every time.</p>
-          </div>
-        </div>
+        </section>
       </div>
     </div>
   );

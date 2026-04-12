@@ -39,7 +39,7 @@ const Layout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [bookingOpen, setBookingOpen] = useState(false);
+  const [bookingOpen, setBookingOpen] = useState(location.pathname.startsWith("/bookings"));
 
   const isActive = (path) => location.pathname === path;
 
@@ -56,7 +56,13 @@ const Layout = () => {
 
       <aside className={`sidebar${sidebarOpen ? " sidebar--open" : ""}`}>
         <div className="sidebar-logo">
-          <div className="sidebar-logo-text">🚗 <span className="brand-r1">R1</span> Car Care</div>
+          <div className="sidebar-logo-mark">R1</div>
+          <div className="sidebar-logo-copy">
+            <div className="sidebar-logo-text">
+              <span className="brand-r1">R1</span> Car Care
+            </div>
+            <div className="sidebar-logo-sub">Wash operations</div>
+          </div>
         </div>
 
         <nav className="sidebar-nav">
@@ -65,14 +71,15 @@ const Layout = () => {
               <div key={item.label}>
                 <button
                   className={`sidebar-nav-item sidebar-nav-item--parent${bookingOpen ? " sidebar-nav-item--expanded" : ""}`}
-                  onClick={() => setBookingOpen((o) => !o)}
+                  onClick={() => setBookingOpen((open) => !open)}
                 >
                   <item.Icon size={17} />
                   <span>{item.label}</span>
-                  {bookingOpen
-                    ? <ChevronUp size={14} className="sidebar-nav-item__chevron" />
-                    : <ChevronDown size={14} className="sidebar-nav-item__chevron" />
-                  }
+                  {bookingOpen ? (
+                    <ChevronUp size={14} className="sidebar-nav-item__chevron" />
+                  ) : (
+                    <ChevronDown size={14} className="sidebar-nav-item__chevron" />
+                  )}
                 </button>
                 {bookingOpen && (
                   <div className="sidebar-submenu">
@@ -105,7 +112,10 @@ const Layout = () => {
         <div className="sidebar-footer">
           <button
             className="sidebar-nav-item sidebar-logout"
-            onClick={() => { localStorage.clear(); navigate("/"); }}
+            onClick={() => {
+              localStorage.clear();
+              navigate("/");
+            }}
           >
             <LogOut size={17} />
             <span>Logout</span>
@@ -115,10 +125,22 @@ const Layout = () => {
 
       <div className="layout-main">
         <header className="layout-topbar">
-          <button className="topbar-hamburger" onClick={() => setSidebarOpen((o) => !o)} aria-label="Toggle menu">
+          <button
+            className="topbar-hamburger"
+            onClick={() => setSidebarOpen((open) => !open)}
+            aria-label="Toggle menu"
+          >
             &#9776;
           </button>
-          <div className="topbar-brand">🚗 <span className="brand-r1">R1</span> Car Care</div>
+          <div className="topbar-brand">
+            <span className="topbar-brand-mark">R1</span>
+            <span className="topbar-brand-copy">
+              <strong>
+                <span className="brand-r1">R1</span> Car Care
+              </strong>
+              <small>Wash operations</small>
+            </span>
+          </div>
         </header>
 
         <main className="layout-content">
