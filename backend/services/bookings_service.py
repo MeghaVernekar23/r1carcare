@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from datetime import date, datetime
 from db.models.sqlalchemy_models import Booking, Packages, VehicleType
-from db.models.pydantic_models import AddBookingDetails, EditBookingDetails
+from db.models.pydantic_models import AddBookingDetails, EditBookingDetails, AddPackageDetails, EditPackageDetails
 from utils.exceptions import BookingNotFoundException, InvalidFilterException
 from utils.db_utils import build_booking_details, get_active_packages, get_active_vehicle_types
 
@@ -10,6 +10,43 @@ ALLOWED_FILTERS = ["today", "upcoming", "past", "pending", "confirmed", "complet
 
 def get_packages(db: Session):
     return get_active_packages(db)
+
+
+def get_all_packages(db: Session):
+    return db.query(Packages).all()
+
+
+def add_package(details: AddPackageDetails, db: Session):
+    pkg = Packages(
+        package_name=details.package_name,
+        description=details.description,
+        price=details.price,
+        is_active=details.is_active,
+    )
+    db.add(pkg)
+    db.commit()
+    db.refresh(pkg)
+    return pkg
+
+
+def update_package(package_id: int, details: EditPackageDetails, db: Session):
+    pkg = db.query(Packages).filter(Packages.package_id == package_id).first()
+    if not pkg:
+        raise Exception(f"Package {package_id} not found.")
+    for field, value in details.model_dump(exclude_unset=True).items():
+        setattr(pkg, field, value)
+    db.commit()
+    db.refresh(pkg)
+    return pkg
+
+
+def delete_package(package_id: int, db: Session):
+    pkg = db.query(Packages).filter(Packages.package_id == package_id).first()
+    if not pkg:
+        raise Exception(f"Package {package_id} not found.")
+    db.delete(pkg)
+    db.commit()
+    return {"detail": "Package deleted."}
 
 
 def get_vehicle_types(db: Session):

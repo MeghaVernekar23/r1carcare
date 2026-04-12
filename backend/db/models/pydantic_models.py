@@ -61,6 +61,20 @@ class PackageDetails(BaseModel):
         from_attributes = True
 
 
+class AddPackageDetails(BaseModel):
+    package_name: str
+    description: Optional[str] = None
+    price: int
+    is_active: int = 1
+
+
+class EditPackageDetails(BaseModel):
+    package_name: Optional[str] = None
+    description: Optional[str] = None
+    price: Optional[int] = None
+    is_active: Optional[int] = None
+
+
 class VehicleTypeDetails(BaseModel):
     vehicle_type_id: int
     vehicle_name: str

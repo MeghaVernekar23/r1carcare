@@ -6,6 +6,8 @@ from db.sessions import get_db
 from db.models.pydantic_models import (
     BookingDetails,
     PackageDetails,
+    AddPackageDetails,
+    EditPackageDetails,
     VehicleTypeDetails,
     AddBookingDetails,
     EditBookingDetails,
@@ -13,6 +15,10 @@ from db.models.pydantic_models import (
 )
 from services.bookings_service import (
     get_packages,
+    get_all_packages,
+    add_package,
+    update_package,
+    delete_package,
     get_vehicle_types,
     get_bookings_by_filter,
     get_bookings_by_date,
@@ -34,12 +40,44 @@ bookings_router = APIRouter(
 )
 
 
-@bookings_router.get("/packages", response_model=List[PackageDetails], description="Get all wash packages.")
+@bookings_router.get("/packages", response_model=List[PackageDetails], description="Get all wash packages (active only).")
 def list_packages(db: Session = Depends(get_db)):
     try:
         return get_packages(db)
     except Exception:
         raise HTTPException(status_code=500, detail="Internal server error")
+
+
+@bookings_router.get("/packages/all", response_model=List[PackageDetails], dependencies=[Depends(get_current_user)], description="Get all packages including inactive.")
+def list_all_packages(db: Session = Depends(get_db)):
+    try:
+        return get_all_packages(db)
+    except Exception:
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+
+@bookings_router.post("/packages/add", response_model=PackageDetails, dependencies=[Depends(get_current_user)], description="Add a new package.")
+def create_package(details: AddPackageDetails, db: Session = Depends(get_db)):
+    try:
+        return add_package(details, db)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@bookings_router.put("/packages/update/{package_id}", response_model=PackageDetails, dependencies=[Depends(get_current_user)], description="Update a package.")
+def edit_package(package_id: int, details: EditPackageDetails, db: Session = Depends(get_db)):
+    try:
+        return update_package(package_id, details, db)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@bookings_router.delete("/packages/delete/{package_id}", response_model=dict, dependencies=[Depends(get_current_user)], description="Delete a package.")
+def remove_package(package_id: int, db: Session = Depends(get_db)):
+    try:
+        return delete_package(package_id, db)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @bookings_router.get("/vehicle-types", response_model=List[VehicleTypeDetails], description="Get all vehicle types.")
