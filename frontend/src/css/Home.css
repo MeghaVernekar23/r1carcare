@@ -1,56 +1,158 @@
 @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Instrument+Serif:ital@0;1&display=swap");
 
-@keyframes heroFloat {
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
+/* ═══════════════════════════════════════════════════════════
+   CAR WASH ANIMATION  —  single 7s loop, all elements share
+   the same duration so timing never drifts apart.
+
+   Timeline (0–100% = 7 s):
+     0–14%   car off-screen left, everything idle
+     14–35%  car drives in from left
+     35–65%  car centred in bay → wash active
+              brushes spinning, spray on, foam, water curtain
+     65–82%  wash fades, car starts rolling right
+     82–100% car exits right, brief pause before next loop
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── shared duration variable so everything is in sync ── */
+.wash-scene * { --dur: 7s; }
+
+/* ── Car rolls in, stops, exits ─────────────────────────── */
+@keyframes carDrive {
+  0%        { transform: translateX(280px);  }
+  14%       { transform: translateX(280px);  }   /* start entering from right */
+  38%       { transform: translateX(0);      }   /* in position    */
+  64%       { transform: translateX(0);      }   /* hold for wash  */
+  84%       { transform: translateX(-280px); }   /* exit left      */
+  100%      { transform: translateX(-280px); }
 }
 
+/* ── Wheels only spin while the car is moving ───────────── */
+@keyframes wheelSpin {
+  /* 14–38% entering, 64–84% exiting — rotate during those windows */
+  0%,  14% { transform: rotate(0deg);   }
+  38%       { transform: rotate(720deg); }  /* 24% of 7s ≈ 1.68s of spin */
+  64%       { transform: rotate(720deg); }  /* stationary while washing  */
+  84%       { transform: rotate(1440deg);}  /* 20% of 7s ≈ 1.4s of spin */
+  100%      { transform: rotate(1440deg);}
+}
+
+/* ── Brushes: retracted → extend when car arrives → retract ─ */
+@keyframes brushLeft {
+  0%,  32% { transform: translateX(-110%) scaleX(0.2); opacity: 0; }
+  40%       { transform: translateX(0)    scaleX(1);   opacity: 1; }
+  62%       { transform: translateX(0)    scaleX(1);   opacity: 1; }
+  70%       { transform: translateX(-110%) scaleX(0.2); opacity: 0; }
+  100%      { transform: translateX(-110%) scaleX(0.2); opacity: 0; }
+}
+
+@keyframes brushRight {
+  0%,  32% { transform: translateX(110%) scaleX(0.2); opacity: 0; }
+  40%       { transform: translateX(0)   scaleX(1);   opacity: 1; }
+  62%       { transform: translateX(0)   scaleX(1);   opacity: 1; }
+  70%       { transform: translateX(110%) scaleX(0.2); opacity: 0; }
+  100%      { transform: translateX(110%) scaleX(0.2); opacity: 0; }
+}
+
+/* brush bristles rotate continuously (always, looks good even when hidden) */
+@keyframes bristleSpin { to { transform: rotate(360deg); } }
+
+/* ── Water curtain drops from top when car is in bay ────── */
+@keyframes curtainDrop {
+  0%,  36% { transform: scaleY(0); transform-origin: top; opacity: 0; }
+  44%       { transform: scaleY(1); transform-origin: top; opacity: 1; }
+  62%       { transform: scaleY(1); transform-origin: top; opacity: 0.8; }
+  70%       { transform: scaleY(0); transform-origin: top; opacity: 0; }
+  100%      { transform: scaleY(0); transform-origin: top; opacity: 0; }
+}
+
+/* individual curtain strands ripple */
+@keyframes curtainRipple {
+  0%, 100% { transform: scaleX(1)   skewX(0deg);  }
+  50%       { transform: scaleX(0.9) skewX(4deg); }
+}
+
+/* ── Overhead spray jets ────────────────────────────────── */
+@keyframes sprayFall {
+  0%,  36% { opacity: 0; transform: scaleY(0); transform-origin: top; }
+  42%       { opacity: 1; transform: scaleY(1); transform-origin: top; }
+  63%       { opacity: 1; transform: scaleY(1); transform-origin: top; }
+  70%       { opacity: 0; transform: scaleY(0); transform-origin: top; }
+  100%      { opacity: 0; transform: scaleY(0); transform-origin: top; }
+}
+
+/* ── Foam blobs appear on car surface ───────────────────── */
+@keyframes foamBlob {
+  0%,  42% { opacity: 0; transform: scale(0.4); }
+  50%       { opacity: 1; transform: scale(1);   }
+  60%       { opacity: 0.8; }
+  68%       { opacity: 0; transform: scale(1.2); }
+  100%      { opacity: 0; transform: scale(0.4); }
+}
+
+/* ── Bubbles rise during wash ───────────────────────────── */
+@keyframes bubbleRise {
+  0%,  40% { opacity: 0; transform: translateY(0) scale(0.6); }
+  48%       { opacity: 1; }
+  65%       { opacity: 0; transform: translateY(-60px) scale(1.1); }
+  100%      { opacity: 0; transform: translateY(-60px) scale(1.1); }
+}
+
+/* ── Floor wet streak sweeps left→right always ──────────── */
+@keyframes floorSheen {
+  from { transform: translateX(-100%) skewX(-20deg); }
+  to   { transform: translateX(300%)  skewX(-20deg); }
+}
+
+/* ── Card ambient pulse ─────────────────────────────────── */
+@keyframes stagePulse {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-4px); }
+}
+
+/* ── Marquee ─────────────────────────────────────────────── */
 @keyframes marqueeScroll {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
 }
 
+/* ── Fade-in on scroll ───────────────────────────────────── */
 .home-fade {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.55s ease, transform 0.55s ease;
+  transform: translateY(22px);
+  transition: opacity 0.52s ease, transform 0.52s ease;
 }
-
 .home-fade.is-visible {
   opacity: 1;
   transform: translateY(0);
 }
 
+/* ═══════════════════════════════════════════════════════════
+   CSS Variables — warm earthy palette consistent with
+   Login, BookNow, Dashboard
+   ═══════════════════════════════════════════════════════════ */
+
 .home-shell {
-  --home-bg: #f4efe7;
-  --home-ink: #161513;
-  --home-muted: #675f57;
-  --home-panel: #fbf7f0;
-  --home-panel-strong: #171717;
-  --home-border: rgba(22, 21, 19, 0.12);
-  --home-accent: #d96c31;
+  --home-bg:          #f4ede3;
+  --home-ink:         #161513;
+  --home-muted:       #6c645b;
+  --home-panel:       rgba(255, 251, 245, 0.78);
+  --home-panel-dark:  rgba(18, 54, 41, 0.97);
+  --home-border:      rgba(22, 21, 19, 0.11);
+  --home-accent:      #d96c31;
   --home-accent-dark: #b54f1b;
-  --home-green: #123629;
-  --home-water: #6db9d8;
-  --home-water-dark: #2b7ea0;
+  --home-water:       #6db9d8;
+  --home-water-dark:  #2e7fa0;
+  --home-green-dark:  #123629;
   background:
-    radial-gradient(circle at 78% 12%, rgba(109, 185, 216, 0.18), transparent 20%),
-    radial-gradient(circle at top left, rgba(217, 108, 49, 0.16), transparent 28%),
-    radial-gradient(circle at right 20%, rgba(18, 54, 41, 0.15), transparent 24%),
-    var(--home-bg);
+    radial-gradient(circle at 88% 8%,  rgba(217, 108, 49, 0.13), transparent 22%),
+    radial-gradient(circle at 6%  12%, rgba(109, 185, 216, 0.16), transparent 26%),
+    linear-gradient(180deg, #f7f1e8 0%, #efe7da 100%);
   color: var(--home-ink);
   min-height: 100vh;
   font-family: "Space Grotesk", "Segoe UI", sans-serif;
 }
+
+/* ── Layout containers ──────────────────────────────────── */
 
 .home-nav,
 .home-hero,
@@ -59,6 +161,8 @@
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
 }
+
+/* ── Nav ────────────────────────────────────────────────── */
 
 .home-nav {
   position: sticky;
@@ -69,7 +173,7 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 18px 0;
-  background: linear-gradient(to bottom, rgba(244, 239, 231, 0.88), rgba(244, 239, 231, 0.58));
+  background: linear-gradient(to bottom, rgba(247, 241, 232, 0.94), rgba(247, 241, 232, 0.62));
   backdrop-filter: blur(10px);
 }
 
@@ -89,10 +193,11 @@
   border-radius: 16px;
   display: grid;
   place-items: center;
-  background: var(--home-panel-strong);
+  background: var(--home-green-dark);
   color: #f8f0e4;
   font-weight: 700;
   letter-spacing: 0.06em;
+  box-shadow: 0 10px 24px rgba(18, 54, 41, 0.22);
 }
 
 .home-brand-text {
@@ -101,9 +206,7 @@
   align-items: flex-start;
 }
 
-.home-brand-text strong {
-  font-size: 1rem;
-}
+.home-brand-text strong { font-size: 1rem; }
 
 .home-brand-text small {
   color: var(--home-muted);
@@ -122,7 +225,13 @@
 .home-nav-links a {
   color: var(--home-muted);
   font-size: 0.92rem;
+  text-decoration: none;
+  transition: color 0.18s;
 }
+
+.home-nav-links a:hover { color: var(--home-accent); }
+
+/* ── Buttons ────────────────────────────────────────────── */
 
 .home-btn {
   border: none;
@@ -131,35 +240,40 @@
   font: inherit;
   font-size: 0.92rem;
   cursor: pointer;
-  transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+  transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.home-btn:hover {
-  transform: translateY(-1px);
-}
+.home-btn:hover { transform: translateY(-2px); }
 
-.home-btn-large {
-  padding: 1rem 1.45rem;
-}
+.home-btn-large { padding: 1rem 1.55rem; font-size: 0.97rem; }
 
 .home-btn-primary {
-  background: var(--home-accent);
-  color: #fff4e9;
+  background: linear-gradient(135deg, #e0773a, #c05520);
+  color: #fff8f3;
+  box-shadow: 0 12px 28px rgba(217, 108, 49, 0.28);
 }
 
 .home-btn-primary:hover {
-  background: var(--home-accent-dark);
+  background: linear-gradient(135deg, #d96c31, #b54f1b);
+  box-shadow: 0 16px 36px rgba(217, 108, 49, 0.38);
 }
 
 .home-btn-muted {
-  background: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.6);
   color: var(--home-ink);
+  border: 1px solid var(--home-border);
 }
 
+.home-btn-muted:hover { background: #fff; }
+
 .home-btn-outline {
-  background: transparent;
-  border: 1px solid rgba(255, 244, 233, 0.38);
-  color: #fff4e9;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(248, 240, 228, 0.38);
+  color: #f8f0e4;
 }
 
 .home-btn-outline-dark {
@@ -169,8 +283,10 @@
   text-decoration: none;
 }
 
+/* ── Hero ───────────────────────────────────────────────── */
+
 .home-hero {
-  padding: 2.8rem 0 3.5rem;
+  padding: 2.8rem 0 4rem;
 }
 
 .home-hero-grid {
@@ -203,6 +319,7 @@
   line-height: 0.95;
   letter-spacing: -0.05em;
   font-weight: 700;
+  text-wrap: balance;
 }
 
 .home-hero-copy h1,
@@ -222,6 +339,8 @@
   margin-top: 1.3rem;
 }
 
+/* ── Highlights / signals ───────────────────────────────── */
+
 .home-highlight-row {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -230,13 +349,16 @@
 }
 
 .home-highlight {
-  padding-top: 1rem;
-  border-top: 1px solid var(--home-border);
+  padding: 1rem 1rem 0;
+  border-top: 2px solid rgba(217, 108, 49, 0.22);
+  background: linear-gradient(180deg, rgba(255,255,255,0.55), transparent);
+  border-radius: 18px;
 }
 
 .home-highlight strong {
   display: block;
   font-size: 1.3rem;
+  color: var(--home-accent-dark);
 }
 
 .home-highlight span {
@@ -246,6 +368,38 @@
   font-size: 0.88rem;
   line-height: 1.5;
 }
+
+.home-signal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin-top: 1.25rem;
+}
+
+.home-signal-card {
+  padding: 1rem;
+  border: 1px solid var(--home-border);
+  border-radius: 20px;
+  background: rgba(255,255,255,0.68);
+  box-shadow: 0 8px 20px rgba(38, 30, 20, 0.07);
+}
+
+.home-signal-card span {
+  display: block;
+  color: var(--home-accent-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.68rem;
+}
+
+.home-signal-card strong {
+  display: block;
+  margin-top: 0.45rem;
+  line-height: 1.35;
+  font-size: 0.98rem;
+}
+
+/* ── Hero Stage card ────────────────────────────────────── */
 
 .home-hero-stage {
   position: relative;
@@ -258,20 +412,275 @@
 .home-stage-card {
   border-radius: 30px;
   padding: 1.6rem;
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 22px 50px rgba(38, 30, 20, 0.16);
 }
 
 .home-stage-card-main {
   background:
-    radial-gradient(circle at top right, rgba(109, 185, 216, 0.2), transparent 22%),
-    linear-gradient(155deg, #102029 0%, #1d1d1d 48%, #2c2c2c 100%);
+    radial-gradient(circle at top right, rgba(109, 185, 216, 0.14), transparent 22%),
+    linear-gradient(155deg, rgba(18, 54, 41, 0.99), rgba(11, 28, 21, 0.99));
   color: #f8f0e4;
-  animation: heroFloat 5.4s ease-in-out infinite;
+  animation: stagePulse 6s ease-in-out infinite;
+  border: 1px solid rgba(255,255,255,0.09);
 }
 
+.home-stage-roofline {
+  display: inline-flex;
+  margin-bottom: 1rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.home-stage-roofline span {
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(248, 240, 228, 0.78);
+}
+
+/* ════════════════════════════════════════════════════════════
+   WASH SCENE  —  the actual animated car-wash illustration
+   ════════════════════════════════════════════════════════════ */
+
+.home-stage-visual {
+  margin-bottom: 1rem;
+}
+
+/* outer container — clips the car as it enters/exits */
+.wash-scene {
+  position: relative;
+  height: 200px;
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(18,54,41,0.55) 0%, rgba(11,28,21,0.35) 100%);
+  border: 1px solid rgba(255,255,255,0.1);
+  overflow: hidden;
+}
+
+/* ── Tunnel arch posts on left and right ─────────────────── */
+.wash-arch {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 18px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.04));
+  z-index: 10;
+}
+.wash-arch-left  { left: 20px; }
+.wash-arch-right { right: 20px; }
+
+/* ── Overhead spray bar ──────────────────────────────────── */
+.wash-spray-bar {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 16px;
+  z-index: 8;
+  padding-top: 2px;
+}
+
+.wash-spray-bar span {
+  width: 3px;
+  height: 72px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, rgba(109,185,216,0.9), rgba(109,185,216,0));
+  transform-origin: top center;
+  animation: sprayFall var(--dur) ease-in-out infinite;
+}
+
+.wash-spray-bar span:nth-child(1) { animation-delay: 0s;    }
+.wash-spray-bar span:nth-child(2) { animation-delay: 0.08s; }
+.wash-spray-bar span:nth-child(3) { animation-delay: 0.16s; }
+.wash-spray-bar span:nth-child(4) { animation-delay: 0.24s; }
+.wash-spray-bar span:nth-child(5) { animation-delay: 0.32s; }
+
+/* ── Rotating brushes ────────────────────────────────────── */
+/* Each brush is a circle of bristles that spins */
+.wash-brush {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 54px;
+  height: 140px;
+  z-index: 7;
+}
+
+.wash-brush-left  {
+  left: 38px;
+  animation: brushLeft var(--dur) ease-in-out infinite;
+}
+.wash-brush-right {
+  right: 38px;
+  animation: brushRight var(--dur) ease-in-out infinite;
+}
+
+/* bristles = thin strips radiating from centre */
+.wash-brush span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, rgba(109,185,216,0.7), rgba(109,185,216,0.2));
+  transform-origin: left center;
+  animation: bristleSpin 0.6s linear infinite;
+}
+
+.wash-brush span:nth-child(1) { transform: rotate(0deg)   translateY(-50%); }
+.wash-brush span:nth-child(2) { transform: rotate(60deg)  translateY(-50%); }
+.wash-brush span:nth-child(3) { transform: rotate(120deg) translateY(-50%); }
+.wash-brush span:nth-child(4) { transform: rotate(180deg) translateY(-50%); }
+.wash-brush span:nth-child(5) { transform: rotate(240deg) translateY(-50%); }
+.wash-brush span:nth-child(6) { transform: rotate(300deg) translateY(-50%); }
+
+/* ── Water curtain ───────────────────────────────────────── */
+.wash-curtain {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 100%;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  z-index: 6;
+  pointer-events: none;
+}
+
+.wash-curtain span {
+  width: 3px;
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(180deg,
+    rgba(109,185,216,0.8) 0%,
+    rgba(109,185,216,0.4) 60%,
+    rgba(109,185,216,0)  100%
+  );
+  transform-origin: top;
+  animation:
+    curtainDrop var(--dur) ease-in-out infinite,
+    curtainRipple 0.7s ease-in-out infinite alternate;
+}
+
+.wash-curtain span:nth-child(1) { animation-delay: 0s,    0s;    }
+.wash-curtain span:nth-child(2) { animation-delay: 0s,    0.09s; }
+.wash-curtain span:nth-child(3) { animation-delay: 0s,    0.18s; }
+.wash-curtain span:nth-child(4) { animation-delay: 0s,    0.27s; }
+.wash-curtain span:nth-child(5) { animation-delay: 0s,    0.36s; }
+.wash-curtain span:nth-child(6) { animation-delay: 0s,    0.27s; }
+.wash-curtain span:nth-child(7) { animation-delay: 0s,    0.18s; }
+.wash-curtain span:nth-child(8) { animation-delay: 0s,    0.09s; }
+
+/* ── Bubbles ─────────────────────────────────────────────── */
+.wash-bubbles {
+  position: absolute;
+  bottom: 30px;
+  left: 20%;
+  right: 20%;
+  pointer-events: none;
+  z-index: 9;
+}
+
+.wash-bubbles span {
+  position: absolute;
+  bottom: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.95), rgba(109,185,216,0.2));
+  opacity: 0;
+  animation: bubbleRise var(--dur) ease-in-out infinite;
+}
+
+.wash-bubbles span:nth-child(1) { left: 10%; width: 12px; height: 12px; animation-delay: 2.6s; }
+.wash-bubbles span:nth-child(2) { left: 28%; width:  8px; height:  8px; animation-delay: 2.9s; }
+.wash-bubbles span:nth-child(3) { left: 50%; width: 14px; height: 14px; animation-delay: 2.7s; }
+.wash-bubbles span:nth-child(4) { left: 68%; width: 10px; height: 10px; animation-delay: 3.1s; }
+.wash-bubbles span:nth-child(5) { left: 84%; width:  9px; height:  9px; animation-delay: 2.8s; }
+
+/* ── Floor wet sheen ─────────────────────────────────────── */
+.wash-floor-track {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  right: 0;
+  height: 18px;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.wash-floor-track::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 30%;
+  background: linear-gradient(90deg, transparent, rgba(109,185,216,0.35), transparent);
+  animation: floorSheen 1.8s linear infinite;
+}
+
+/* ── Car ─────────────────────────────────────────────────── */
+.wash-car {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  width: 200px;
+  margin-left: -100px;   /* centre it */
+  filter: drop-shadow(0 12px 18px rgba(0,0,0,0.4));
+  animation: carDrive var(--dur) ease-in-out infinite;
+  z-index: 5;
+}
+
+.wash-car svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+.wash-wheel {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: wheelSpin var(--dur) linear infinite;
+}
+
+.wash-wheel-hub {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: wheelSpin var(--dur) linear infinite reverse;
+}
+
+/* foam blobs that appear on the car body during the wash */
+.wash-car-foam {
+  position: absolute;
+  top: 8px;
+  left: 15%;
+  right: 15%;
+  height: 50%;
+  pointer-events: none;
+}
+
+.wash-car-foam span {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.96), rgba(200,240,255,0.3));
+  opacity: 0;
+  animation: foamBlob var(--dur) ease-in-out infinite;
+}
+
+.wash-car-foam span:nth-child(1) { left: 5%;  top: 20%; width: 28px; height: 22px; animation-delay: 0s;    }
+.wash-car-foam span:nth-child(2) { left: 30%; top: 10%; width: 20px; height: 18px; animation-delay: 0.15s; }
+.wash-car-foam span:nth-child(3) { left: 55%; top: 25%; width: 24px; height: 20px; animation-delay: 0.08s; }
+.wash-car-foam span:nth-child(4) { left: 75%; top: 8%;  width: 18px; height: 16px; animation-delay: 0.22s; }
+
+/* ── Stage info below animation ─────────────────────────── */
+
 .home-stage-topline {
-  color: rgba(255, 244, 233, 0.68);
-  font-size: 0.82rem;
+  color: rgba(248, 240, 228, 0.68);
+  font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
 }
@@ -282,19 +691,19 @@
 
 .home-stage-metric span {
   display: block;
-  font-size: clamp(3rem, 6vw, 4.5rem);
-  line-height: 0.9;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  line-height: 0.95;
   font-weight: 700;
+  color: #f8f0e4;
 }
 
-.home-stage-metric small {
-  color: rgba(255, 244, 233, 0.72);
-}
+.home-stage-metric small { color: rgba(248, 240, 228, 0.7); }
 
 .home-stage-list {
   padding-left: 1rem;
-  color: rgba(255, 244, 233, 0.8);
+  color: rgba(248, 240, 228, 0.82);
   line-height: 1.7;
+  font-size: 0.9rem;
 }
 
 .home-stage-badges {
@@ -306,22 +715,24 @@
 
 .home-stage-badges span {
   padding: 0.38rem 0.7rem;
-  border: 1px solid rgba(109, 185, 216, 0.24);
+  border: 1px solid rgba(255,255,255,0.13);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  color: #d8eff8;
+  background: rgba(255,255,255,0.07);
+  color: rgba(248, 240, 228, 0.84);
   font-size: 0.74rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
+/* ── Accent card ────────────────────────────────────────── */
+
 .home-stage-card-accent {
   width: min(320px, 100%);
   justify-self: end;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.5), transparent 100%),
-    #efe2d1;
-  border: 1px solid rgba(43, 126, 160, 0.14);
+    linear-gradient(180deg, rgba(255,255,255,0.74), transparent),
+    #faf3ea;
+  border: 1px solid rgba(217, 108, 49, 0.2);
 }
 
 .home-stage-chip {
@@ -329,32 +740,23 @@
   margin-bottom: 0.8rem;
   padding: 0.35rem 0.7rem;
   border-radius: 999px;
-  background: rgba(217, 108, 49, 0.14);
+  background: rgba(217, 108, 49, 0.12);
   color: var(--home-accent-dark);
   font-size: 0.75rem;
   font-weight: 700;
 }
 
-.home-stage-card-accent h2 {
-  font-size: 1.55rem;
-}
+.home-stage-card-accent h2  { font-size: 1.55rem; }
+.home-stage-card-accent p   { margin: 0.6rem 0 1.1rem; color: var(--home-muted); line-height: 1.6; }
+.home-stage-card-accent strong { font-size: 1.15rem; color: var(--home-accent-dark); }
 
-.home-stage-card-accent p {
-  margin: 0.6rem 0 1.1rem;
-  color: var(--home-muted);
-  line-height: 1.6;
-}
-
-.home-stage-card-accent strong {
-  font-size: 1.15rem;
-}
+/* ── Marquee ─────────────────────────────────────────────── */
 
 .home-marquee {
   overflow: hidden;
   border-top: 1px solid var(--home-border);
   border-bottom: 1px solid var(--home-border);
-  background:
-    linear-gradient(90deg, rgba(109, 185, 216, 0.08), rgba(255, 255, 255, 0.3), rgba(109, 185, 216, 0.08));
+  background: rgba(255, 255, 255, 0.38);
 }
 
 .home-marquee-track {
@@ -382,36 +784,35 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--home-water-dark);
+  background: var(--home-accent);
   transform: translateY(-50%);
 }
+
+/* ── Sections ────────────────────────────────────────────── */
 
 .home-section {
   padding: 6rem 0;
 }
 
 .home-section-dark {
-  color: #f6efe7;
+  color: #f8f0e4;
+  width: 100%;
+  padding-inline: calc((100% - min(1180px, calc(100% - 32px))) / 2);
+  background:
+    radial-gradient(circle at top right, rgba(109, 185, 216, 0.14), transparent 20%),
+    linear-gradient(135deg, rgba(18, 54, 41, 0.99), rgba(11, 28, 21, 0.97)),
+    #0d2119;
 }
 
 .home-section-dark .home-section-head h2,
 .home-section-dark .home-service-card h3 {
-  color: #f6efe7;
+  color: #f8f0e4;
 }
 
 .home-section-dark .home-section-head p,
 .home-section-dark .home-service-card p,
 .home-section-dark .home-service-card span {
-  color: rgba(246, 239, 231, 0.72);
-}
-
-.home-section-dark {
-  width: 100%;
-  padding-inline: calc((100% - min(1180px, calc(100% - 32px))) / 2);
-  background:
-    radial-gradient(circle at top right, rgba(109, 185, 216, 0.14), transparent 18%),
-    linear-gradient(135deg, rgba(18, 54, 41, 0.96), rgba(11, 25, 20, 0.96)),
-    #10261d;
+  color: rgba(248, 240, 228, 0.68);
 }
 
 .home-section-head {
@@ -429,6 +830,8 @@
   max-width: 12ch;
 }
 
+/* ── Service cards ───────────────────────────────────────── */
+
 .home-service-grid,
 .home-process-grid,
 .home-review-grid {
@@ -436,15 +839,26 @@
   gap: 1rem;
 }
 
-.home-service-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
+.home-service-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 
 .home-service-card {
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 26px;
   padding: 1.6rem;
-  background: rgba(255, 255, 255, 0.04);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02)),
+    rgba(255,255,255,0.04);
+}
+
+.home-service-icon {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: rgba(217, 108, 49, 0.15);
+  color: #f4c8a4;
 }
 
 .home-service-card span,
@@ -471,6 +885,8 @@
   color: var(--home-muted);
 }
 
+/* ── Packages ────────────────────────────────────────────── */
+
 .home-section-split,
 .home-proof,
 .home-cta {
@@ -493,7 +909,9 @@
 .home-cta {
   border: 1px solid var(--home-border);
   border-radius: 28px;
-  background: rgba(255, 255, 255, 0.45);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.82), rgba(255,252,245,0.56)),
+    rgba(255,255,255,0.5);
 }
 
 .home-package-card,
@@ -505,9 +923,10 @@
 
 .home-package-card.is-featured {
   background:
-    linear-gradient(180deg, rgba(109, 185, 216, 0.08), transparent 100%),
-    #f3dfca;
-  border-color: rgba(43, 126, 160, 0.28);
+    linear-gradient(180deg, rgba(217, 108, 49, 0.12), transparent),
+    #fdf6ee;
+  border-color: rgba(217, 108, 49, 0.3);
+  box-shadow: 0 12px 32px rgba(217, 108, 49, 0.1);
 }
 
 .home-package-header {
@@ -526,6 +945,7 @@
 .home-package-header strong {
   font-size: 1.35rem;
   white-space: nowrap;
+  color: var(--home-accent-dark);
 }
 
 .home-package-points {
@@ -538,25 +958,25 @@
 .home-package-points span {
   padding: 0.45rem 0.65rem;
   border-radius: 999px;
-  background: rgba(22, 21, 19, 0.06);
+  background: rgba(217, 108, 49, 0.08);
+  border: 1px solid rgba(217, 108, 49, 0.14);
   letter-spacing: 0.06em;
 }
 
-.home-process-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
+/* ── Process ─────────────────────────────────────────────── */
 
-.home-process-card strong {
-  color: var(--home-accent-dark);
-}
+.home-process-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 
-.home-proof-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
+.home-process-card strong { color: var(--home-accent-dark); }
+
+/* ── Proof section ───────────────────────────────────────── */
+
+.home-proof-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
 .home-proof-grid > div strong {
   display: block;
   font-size: 1rem;
+  margin-top: 0.8rem;
 }
 
 .home-proof-grid > div p {
@@ -565,9 +985,11 @@
   line-height: 1.65;
 }
 
-.home-review-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
+.home-proof-grid > div svg { color: var(--home-accent); }
+
+/* ── Reviews ─────────────────────────────────────────────── */
+
+.home-review-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
 .home-review-card p {
   font-family: "Instrument Serif", Georgia, serif;
@@ -579,17 +1001,20 @@
 .home-review-card strong {
   display: block;
   margin-top: 1rem;
+  color: var(--home-accent-dark);
 }
+
+/* ── CTA ─────────────────────────────────────────────────── */
 
 .home-cta {
   margin-bottom: 3rem;
   padding: 2rem;
 }
 
+/* ── Responsive ──────────────────────────────────────────── */
+
 @media (max-width: 980px) {
-  .home-nav {
-    flex-wrap: wrap;
-  }
+  .home-nav { flex-wrap: wrap; }
 
   .home-nav-links {
     order: 3;
@@ -608,15 +1033,14 @@
   .home-service-grid,
   .home-process-grid,
   .home-review-grid,
-  .home-proof-grid {
+  .home-proof-grid,
+  .home-signal-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 720px) {
-  .home-nav-links {
-    display: none;
-  }
+  .home-nav-links { display: none; }
 
   .home-nav,
   .home-hero,
@@ -637,7 +1061,8 @@
   .home-service-grid,
   .home-process-grid,
   .home-review-grid,
-  .home-proof-grid {
+  .home-proof-grid,
+  .home-signal-grid {
     grid-template-columns: 1fr;
   }
 
@@ -646,7 +1071,5 @@
     align-items: flex-start;
   }
 
-  .home-stage-card-accent {
-    justify-self: stretch;
-  }
+  .home-stage-card-accent { width: 100%; justify-self: stretch; }
 }

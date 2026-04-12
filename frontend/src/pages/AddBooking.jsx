@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { Mic, ScanLine, LoaderCircle } from "lucide-react";
 import "../css/Dashboard.css";
 import { apiRequest } from "../utils/APIrequest";
 import { BASE_URL } from "../services/utils";
+import { readVehicleNumberFromImage, startSpeechInput } from "../utils/inputAssist";
 
 const emptyForm = {
   customer_phone: "",
@@ -27,6 +29,8 @@ export default function AddBooking() {
   const [availableStaff, setAvailableStaff] = useState([]);
   const [msg, setMsg] = useState(null);
   const [err, setErr] = useState(null);
+  const [activeVoiceField, setActiveVoiceField] = useState("");
+  const [isScanningPlate, setIsScanningPlate] = useState(false);
 
   useEffect(() => {
     apiRequest({ url: `${BASE_URL}/bookings/packages` }).then(setPackages).catch(() => {});
@@ -103,6 +107,42 @@ export default function AddBooking() {
     }
   };
 
+  const startVoiceFill = (field) => {
+    setErr(null);
+    startSpeechInput({
+      mode: field,
+      onStart: () => setActiveVoiceField(field),
+      onEnd: () => setActiveVoiceField(""),
+      onError: (message) => setErr(message),
+      onResult: (value) => {
+        if (field === "phone") {
+          setForm((prev) => ({ ...prev, customer_phone: value }));
+          return;
+        }
+
+        setCustomerName(value);
+      },
+    });
+  };
+
+  const handlePlateScan = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+
+    if (!file) return;
+
+    setErr(null);
+    setIsScanningPlate(true);
+    try {
+      const plate = await readVehicleNumberFromImage(file);
+      setForm((prev) => ({ ...prev, vehicle_number: plate }));
+    } catch (error) {
+      setErr(error.message);
+    } finally {
+      setIsScanningPlate(false);
+    }
+  };
+
   return (
     <div className="page-shell">
       <section className="page-header">
@@ -129,21 +169,41 @@ export default function AddBooking() {
           <div className="cc-form-row">
             <div className="cc-form-group">
               <label>Customer Phone</label>
-              <input
-                required
-                value={form.customer_phone}
-                onChange={(e) => setForm({ ...form, customer_phone: e.target.value })}
-                onBlur={lookupCustomer}
-                placeholder="Phone number"
-              />
+              <div className="cc-field-control">
+                <input
+                  required
+                  value={form.customer_phone}
+                  onChange={(e) => setForm({ ...form, customer_phone: e.target.value })}
+                  onBlur={lookupCustomer}
+                  placeholder="Phone number"
+                />
+                <button
+                  type="button"
+                  className="cc-icon-btn"
+                  onClick={() => startVoiceFill("phone")}
+                  aria-label="Fill phone number using microphone"
+                >
+                  {activeVoiceField === "phone" ? <LoaderCircle size={16} className="spin" /> : <Mic size={16} />}
+                </button>
+              </div>
             </div>
             <div className="cc-form-group">
               <label>Customer Name</label>
-              <input
-                value={customerName}
-                onChange={(e) => setCustomerName(e.target.value)}
-                placeholder="Auto-filled or enter manually"
-              />
+              <div className="cc-field-control">
+                <input
+                  value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
+                  placeholder="Auto-filled or enter manually"
+                />
+                <button
+                  type="button"
+                  className="cc-icon-btn"
+                  onClick={() => startVoiceFill("name")}
+                  aria-label="Fill name using microphone"
+                >
+                  {activeVoiceField === "name" ? <LoaderCircle size={16} className="spin" /> : <Mic size={16} />}
+                </button>
+              </div>
             </div>
           </div>
 
@@ -183,11 +243,17 @@ export default function AddBooking() {
           <div className="cc-form-row">
             <div className="cc-form-group">
               <label>Vehicle Number Plate</label>
-              <input
-                value={form.vehicle_number}
-                onChange={(e) => setForm({ ...form, vehicle_number: e.target.value })}
-                placeholder="e.g. KA 09 AB 1234"
-              />
+              <div className="cc-field-control">
+                <input
+                  value={form.vehicle_number}
+                  onChange={(e) => setForm({ ...form, vehicle_number: e.target.value.toUpperCase() })}
+                  placeholder="e.g. KA 09 AB 1234"
+                />
+                <label className="cc-icon-btn cc-upload-btn" aria-label="Scan vehicle number from camera or image">
+                  {isScanningPlate ? <LoaderCircle size={16} className="spin" /> : <ScanLine size={16} />}
+                  <input type="file" accept="image/*" capture="environment" onChange={handlePlateScan} hidden />
+                </label>
+              </div>
             </div>
             <div className="cc-form-group">
               <label>Status</label>

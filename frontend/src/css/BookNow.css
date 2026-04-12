@@ -189,6 +189,13 @@
   margin-bottom: 18px;
 }
 
+.bn-field-control {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
 .bn-field label {
   margin-bottom: 8px;
   color: #3f3a34;
@@ -212,6 +219,23 @@
   font: inherit;
   outline: none;
   transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.bn-icon-btn {
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(22, 21, 19, 0.12);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--bn-ink);
+  cursor: pointer;
+}
+
+.bn-upload-btn {
+  cursor: pointer;
 }
 
 .bn-field input::placeholder {
@@ -249,6 +273,16 @@
 
 .bn-btn-submit {
   margin-top: 6px;
+}
+
+.spin {
+  animation: bn-spin 0.9s linear infinite;
+}
+
+@keyframes bn-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .bn-success-wrap {

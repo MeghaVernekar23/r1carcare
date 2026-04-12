@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { Mic, ScanLine, LoaderCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { apiRequest } from "../utils/APIrequest";
 import { BASE_URL } from "../services/utils";
+import { readVehicleNumberFromImage, startSpeechInput } from "../utils/inputAssist";
 import "../css/BookNow.css";
 
 const ALL_TIMES = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
@@ -23,6 +25,8 @@ export default function BookNow() {
   const [err, setErr] = useState(null);
   const [customerId, setCustomerId] = useState(null);
   const [bookedSlots, setBookedSlots] = useState([]);
+  const [activeVoiceField, setActiveVoiceField] = useState("");
+  const [isScanningPlate, setIsScanningPlate] = useState(false);
 
   useEffect(() => {
     apiRequest({ url: `${BASE_URL}/bookings/packages` }).then(setPackages).catch(() => {});
@@ -120,6 +124,42 @@ export default function BookNow() {
     }
   };
 
+  const startVoiceFill = (field) => {
+    setErr(null);
+    startSpeechInput({
+      mode: field,
+      onStart: () => setActiveVoiceField(field),
+      onEnd: () => setActiveVoiceField(""),
+      onError: (message) => setErr(message),
+      onResult: (value) => {
+        if (field === "phone") {
+          setForm((prev) => ({ ...prev, phone: value }));
+          return;
+        }
+
+        setForm((prev) => ({ ...prev, name: value }));
+      },
+    });
+  };
+
+  const handlePlateScan = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+
+    if (!file) return;
+
+    setErr(null);
+    setIsScanningPlate(true);
+    try {
+      const plate = await readVehicleNumberFromImage(file);
+      setForm((prev) => ({ ...prev, vehicle_number: plate }));
+    } catch (error) {
+      setErr(error.message);
+    } finally {
+      setIsScanningPlate(false);
+    }
+  };
+
   if (msg) {
     return (
       <div className="bn-page">
@@ -186,22 +226,42 @@ export default function BookNow() {
               <div className="bn-row">
                 <div className="bn-field">
                   <label>Phone Number *</label>
-                  <input
-                    required
-                    value={form.phone}
-                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                    onBlur={lookupCustomer}
-                    placeholder="10-digit mobile"
-                  />
+                  <div className="bn-field-control">
+                    <input
+                      required
+                      value={form.phone}
+                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                      onBlur={lookupCustomer}
+                      placeholder="10-digit mobile"
+                    />
+                    <button
+                      type="button"
+                      className="bn-icon-btn"
+                      onClick={() => startVoiceFill("phone")}
+                      aria-label="Fill phone number using microphone"
+                    >
+                      {activeVoiceField === "phone" ? <LoaderCircle size={16} className="spin" /> : <Mic size={16} />}
+                    </button>
+                  </div>
                 </div>
                 <div className="bn-field">
                   <label>Your Name *</label>
-                  <input
-                    required
-                    value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    placeholder="Full name"
-                  />
+                  <div className="bn-field-control">
+                    <input
+                      required
+                      value={form.name}
+                      onChange={(e) => setForm({ ...form, name: e.target.value })}
+                      placeholder="Full name"
+                    />
+                    <button
+                      type="button"
+                      className="bn-icon-btn"
+                      onClick={() => startVoiceFill("name")}
+                      aria-label="Fill name using microphone"
+                    >
+                      {activeVoiceField === "name" ? <LoaderCircle size={16} className="spin" /> : <Mic size={16} />}
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -242,11 +302,17 @@ export default function BookNow() {
                 <label>
                   Vehicle Number Plate <span className="bn-optional">(optional)</span>
                 </label>
-                <input
-                  value={form.vehicle_number}
-                  onChange={(e) => setForm({ ...form, vehicle_number: e.target.value })}
-                  placeholder="e.g. KA 09 AB 1234"
-                />
+                <div className="bn-field-control">
+                  <input
+                    value={form.vehicle_number}
+                    onChange={(e) => setForm({ ...form, vehicle_number: e.target.value.toUpperCase() })}
+                    placeholder="e.g. KA 09 AB 1234"
+                  />
+                  <label className="bn-icon-btn bn-upload-btn" aria-label="Scan vehicle number from camera or image">
+                    {isScanningPlate ? <LoaderCircle size={16} className="spin" /> : <ScanLine size={16} />}
+                    <input type="file" accept="image/*" capture="environment" onChange={handlePlateScan} hidden />
+                  </label>
+                </div>
               </div>
 
               <div className="bn-row">

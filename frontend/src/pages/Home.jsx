@@ -1,24 +1,29 @@
 import React, { useEffect, useRef, useState } from "react";
+import { CarFront, Droplets, Sparkles, ShieldCheck, Waves, CircleDot } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import "../css/Home.css";
 
 const services = [
   {
+    Icon: Droplets,
     eyebrow: "Foam Bay",
     title: "Exterior Foam Wash",
     desc: "Snow-foam pre-soak, pressure rinse, wheel-face cleaning, and hand drying for an instant fresh-wash finish.",
   },
   {
+    Icon: Sparkles,
     eyebrow: "Cabin Reset",
     title: "Interior Cleaning",
     desc: "Vacuuming, mat cleanup, dash wipe-down, and glass cleaning to remove dust, crumbs, and daily grime.",
   },
   {
+    Icon: Waves,
     eyebrow: "Gloss Boost",
     title: "Wax And Shine",
     desc: "Quick wax protection and gloss enhancement for customers who want more shine after the wash.",
   },
   {
+    Icon: ShieldCheck,
     eyebrow: "Add-On Protection",
     title: "Ceramic Top Coat",
     desc: "Hydrophobic protection that helps water bead off and keeps routine wash maintenance easier.",
@@ -26,9 +31,15 @@ const services = [
 ];
 
 const highlights = [
-  { value: "30 min", label: "express wash turnaround" },
-  { value: "4.9/5", label: "local customer rating" },
+  { value: "30 min", label: "average wash turnaround" },
+  { value: "7 days", label: "open every week for wash slots" },
   { value: "2,000+", label: "cars and bikes cleaned" },
+];
+
+const washSignals = [
+  { label: "Foam cannon wash", value: "High-pressure pre-soak" },
+  { label: "Wheel focus", value: "Tyres, arches, and rims" },
+  { label: "Final hand dry", value: "No drip-heavy pickup" },
 ];
 
 const packages = [
@@ -57,16 +68,16 @@ const steps = [
   {
     step: "01",
     title: "Choose a slot",
-    desc: "Pick your wash package, vehicle type, and preferred time slot.",
+    desc: "Pick the wash package, vehicle type, and the slot that fits your day.",
   },
   {
     step: "02",
-    title: "Arrive at the bay",
-    desc: "We confirm the booking, inspect the car quickly, and queue the correct wash workflow.",
+    title: "Roll into the wash bay",
+    desc: "We confirm the booking, inspect the vehicle quickly, and line it up for the correct wash flow.",
   },
   {
     step: "03",
-    title: "Wash and finish",
+    title: "Foam, rinse, and finish",
     desc: "The team runs foam wash, wheel cleaning, drying, and any selected interior or wax add-ons.",
   },
   {
@@ -80,17 +91,17 @@ const testimonials = [
   {
     name: "Arjun K.",
     quote:
-      "The foam wash and wheel cleaning made the car look fresh without keeping me waiting half the day.",
+      "The foam wash got the road film off properly and the wheels finally looked cleaned instead of just wet.",
   },
   {
     name: "Sneha R.",
     quote:
-      "Booking was simple, the slot started on time, and the interior cleanup made the cabin feel properly reset.",
+      "Booking was simple, the slot started on time, and the car came out looking like it had actually been through a wash bay.",
   },
   {
     name: "Vikram P.",
     quote:
-      "I came in for a wash and added the protection coat. Water still beads off properly after weeks.",
+      "I came in for a wash and added the protection coat. The shine held up and water still beads off properly.",
   },
 ];
 
@@ -168,11 +179,12 @@ function Home() {
         <section className="home-hero">
           <div className="home-hero-grid">
             <div className="home-hero-copy">
-              <span className="home-kicker">Mysuru foam wash and car cleaning</span>
-              <h1>Fast car wash service with a cleaner, sharper finish.</h1>
+              <span className="home-kicker">Mysuru car wash bay and detailing desk</span>
+              <h1>Car wash booking built around foam, rinse, wheels, and shine.</h1>
               <p>
-                R1 is built around repeatable car wash workflows: foam pre-soak, wheel cleaning,
-                hand drying, interior reset, and optional shine protection with quick online booking.
+                R1 should feel like a real car wash the moment you land here: bright wash-bay
+                visuals, fast slot booking, foam-led exterior cleaning, interior reset, and add-on
+                protection when you want more than a basic rinse.
               </p>
 
               <div className="home-hero-actions">
@@ -192,31 +204,124 @@ function Home() {
                   </div>
                 ))}
               </div>
+
+              <div className="home-signal-grid">
+                {washSignals.map((item) => (
+                  <div key={item.label} className="home-signal-card">
+                    <span>{item.label}</span>
+                    <strong>{item.value}</strong>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="home-hero-stage">
               <div className="home-stage-card home-stage-card-main">
-                <div className="home-stage-topline">Today in the wash bay</div>
+                <div className="home-stage-roofline" aria-hidden="true">
+                  <span>R1 WASH BAY</span>
+                </div>
+                <div className="home-stage-visual" aria-hidden="true">
+                  <div className="wash-scene">
+                    {/* tunnel frame - left arch */}
+                    <div className="wash-arch wash-arch-left" />
+                    {/* tunnel frame - right arch */}
+                    <div className="wash-arch wash-arch-right" />
+
+                    {/* overhead spray bar */}
+                    <div className="wash-spray-bar">
+                      <span /><span /><span /><span /><span />
+                    </div>
+
+                    {/* left brush */}
+                    <div className="wash-brush wash-brush-left">
+                      <span /><span /><span /><span /><span /><span />
+                    </div>
+                    {/* right brush */}
+                    <div className="wash-brush wash-brush-right">
+                      <span /><span /><span /><span /><span /><span />
+                    </div>
+
+                    {/* water curtain */}
+                    <div className="wash-curtain">
+                      <span /><span /><span /><span /><span /><span /><span /><span />
+                    </div>
+
+                    {/* floor wet track */}
+                    <div className="wash-floor-track" />
+
+                    {/* bubbles */}
+                    <div className="wash-bubbles">
+                      <span /><span /><span /><span /><span />
+                    </div>
+
+                    {/* THE CAR */}
+                    <div className="wash-car">
+                      <svg viewBox="0 0 200 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <defs>
+                          <linearGradient id="wBodyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%"   stopColor="#e8c49a" />
+                            <stop offset="40%"  stopColor="#c47a3a" />
+                            <stop offset="100%" stopColor="#5a2a08" />
+                          </linearGradient>
+                          <linearGradient id="wGlassGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%"   stopColor="#d0f0ff" stopOpacity="0.9" />
+                            <stop offset="100%" stopColor="#5aaac8" stopOpacity="0.7" />
+                          </linearGradient>
+                          <radialGradient id="wWheelGrad" cx="50%" cy="40%" r="60%">
+                            <stop offset="0%"   stopColor="#666" />
+                            <stop offset="100%" stopColor="#111" />
+                          </radialGradient>
+                        </defs>
+                        {/* shadow */}
+                        <ellipse cx="100" cy="83" rx="72" ry="6" fill="rgba(0,0,0,0.25)" />
+                        {/* body */}
+                        <path d="M18 64 L24 50 C27 43 36 37 48 35 L90 29 C98 28 104 24 112 18 L128 8 C133 5 139 4 145 4 H168 C178 4 185 11 188 22 L191 38 C192 42 193 47 193 52 V61 C193 67 188 71 182 71 H173 C169 71 165 68 163 64 L157 54 H67 L59 64 C57 68 53 71 48 71 H32 C24 71 16 67 18 64 Z"
+                              fill="url(#wBodyGrad)" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
+                        {/* glass */}
+                        <path d="M72 34 L92 28 C100 26 106 22 113 17 L127 9 H158 C165 9 170 15 172 24 L174 37 H72 Z"
+                              fill="url(#wGlassGrad)" stroke="rgba(200,240,255,0.3)" strokeWidth="1" />
+                        {/* pillar line */}
+                        <line x1="114" y1="37" x2="114" y2="54" stroke="rgba(200,240,255,0.3)" strokeWidth="1.5" strokeLinecap="round" />
+                        {/* headlight */}
+                        <rect x="186" y="46" width="7" height="8" rx="3" fill="#ffd060" style={{filter:"drop-shadow(0 0 5px #ffd060)"}} />
+                        {/* tail light */}
+                        <rect x="16" y="49" width="8" height="6" rx="3" fill="#ff4444" style={{filter:"drop-shadow(0 0 4px #ff4444)"}} />
+                        {/* wheels */}
+                        <circle cx="60" cy="70" r="16" fill="url(#wWheelGrad)" stroke="#222" strokeWidth="3" className="wash-wheel" />
+                        <circle cx="60" cy="70" r="6"  fill="#888" stroke="#ccc" strokeWidth="2" className="wash-wheel-hub" />
+                        <circle cx="152" cy="70" r="16" fill="url(#wWheelGrad)" stroke="#222" strokeWidth="3" className="wash-wheel" />
+                        <circle cx="152" cy="70" r="6"  fill="#888" stroke="#ccc" strokeWidth="2" className="wash-wheel-hub" />
+                      </svg>
+
+                      {/* foam overlay on car - appears mid-wash */}
+                      <div className="wash-car-foam">
+                        <span /><span /><span /><span />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="home-stage-topline">Live wash floor status</div>
                 <div className="home-stage-metric">
-                  <span>14</span>
-                  <small>confirmed wash bookings</small>
+                  <span>Foam + Dry</span>
+                  <small>the core wash flow customers actually expect</small>
                 </div>
                 <div className="home-stage-badges">
                   <span>Foam pre-wash</span>
                   <span>Wheel cleanup</span>
                   <span>Hand dry finish</span>
+                  <span>Spot-free glass</span>
                 </div>
                 <ul className="home-stage-list">
-                  <li>Exterior and interior stations separated for faster wash turnaround</li>
-                  <li>Dedicated wash handling for hatchbacks, SUVs, bikes, and premium cars</li>
-                  <li>Online booking plus staff dashboard keeps the queue under control</li>
+                  <li>Wash-bay styling now leads the page instead of a generic service-brand look</li>
+                  <li>Vehicle-based handling supports hatchbacks, sedans, SUVs, bikes, and premium cars</li>
+                  <li>Booking plus staff dashboard keeps the bay moving without queue confusion</li>
                 </ul>
               </div>
 
               <div className="home-stage-card home-stage-card-accent">
-                <span className="home-stage-chip">Most booked</span>
+                <span className="home-stage-chip">Wash line favorite</span>
                 <h2>Full Wash</h2>
-                <p>Foam wash, interior vacuum, glass cleanup, dashboard wipe, and tyre shine.</p>
+                <p>Foam cannon, wheel cleanup, vacuum, glass wipe, dashboard reset, and tyre shine.</p>
                 <strong>From Rs 599</strong>
               </div>
             </div>
@@ -243,6 +348,9 @@ function Home() {
           <div className="home-service-grid">
             {services.map((service, index) => (
               <FadeSection key={service.title} className="home-service-card" delay={index * 70}>
+                <div className="home-service-icon">
+                  <service.Icon size={20} strokeWidth={2} />
+                </div>
                 <span>{service.eyebrow}</span>
                 <h3>{service.title}</h3>
                 <p>{service.desc}</p>
@@ -308,23 +416,27 @@ function Home() {
         <section className="home-section home-proof">
           <FadeSection className="home-proof-panel">
             <span className="home-kicker">Why people return</span>
-            <h2>A local car wash homepage that actually feels like a car wash brand.</h2>
+            <h2>A homepage that reads like a working wash bay, not a generic service template.</h2>
             <p>
-              The page now pushes the wash-first story up front: bays, foam, wheels, drying, quick
-              slots, and package clarity instead of reading like a generic premium service template.
+              The page now pushes the wash-first story up front: bay lighting, water tones, foam,
+              wheel care, drying, quick slots, and package clarity instead of drifting into a luxury
+              salon aesthetic.
             </p>
           </FadeSection>
 
           <FadeSection className="home-proof-grid" delay={80}>
             <div>
+              <CircleDot size={18} strokeWidth={2.2} />
               <strong>Express-friendly</strong>
               <p>Walk-ins still work, but booked customers lock in the wash slot they actually want.</p>
             </div>
             <div>
+              <CarFront size={18} strokeWidth={2.2} />
               <strong>Vehicle-based wash flow</strong>
               <p>Bike, hatchback, sedan, and SUV cleaning can map cleanly to the available wash tiers.</p>
             </div>
             <div>
+              <Droplets size={18} strokeWidth={2.2} />
               <strong>Booking-led operation</strong>
               <p>The staff login remains visible, but the main journey clearly prioritizes wash booking.</p>
             </div>
