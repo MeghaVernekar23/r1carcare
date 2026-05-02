@@ -414,7 +414,7 @@ export default function BookNow() {
             <div className="bn-field">
               <label>Preferred Date *</label>
               <input required type="date" value={form.date}
-                min={new Date().toISOString().split("T")[0]}
+                min={(() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; })()}
                 onChange={e => setForm({ ...form, date: e.target.value })} />
             </div>
             <div className="bn-field">
