@@ -98,7 +98,7 @@ class BookingDetails(BaseModel):
 
 class AddBookingDetails(BaseModel):
     customer_id: int
-    package_id: int
+    package_id: Optional[int] = None
     vehicle_type_id: int
     vehicle_number: Optional[str] = None
     appointment_date: date
@@ -153,6 +153,36 @@ class HolidayResponse(BaseModel):
     holiday_id: int
     title: str
     date: date
+
+    class Config:
+        from_attributes = True
+
+
+# ── Stamp Card models ─────────────────────────────────────
+class StampCardCreate(BaseModel):
+    customer_id: int
+    total_washes: int = 10
+    price_paid: float = 4000.0
+    notes: Optional[str] = None
+
+
+class StampCardResponse(BaseModel):
+    card_id: int
+    customer_id: int
+    customer_name: Optional[str] = None
+    customer_phone: Optional[str] = None
+    total_washes: int
+    washes_used: int
+    washes_remaining: int
+    free_wash_earned: bool
+    free_wash_used: bool
+    birthday_box_discount: bool
+    price_paid: float
+    purchase_date: date
+    expiry_date: date
+    status: str
+    notes: Optional[str] = None
+    created_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True

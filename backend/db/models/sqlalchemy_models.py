@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Date, Float
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Date, Float, Boolean
 from sqlalchemy.sql import func
 from db.sessions import Base
 import datetime
@@ -75,3 +75,22 @@ class Holiday(Base):
     holiday_id = Column(Integer, primary_key=True, index=True)
     title = Column(String, nullable=False)
     date = Column(Date, nullable=False, unique=True)
+
+
+class StampCard(Base):
+    __tablename__ = "stamp_cards"
+
+    card_id = Column(Integer, primary_key=True, index=True)
+    customer_id = Column(Integer, ForeignKey("customers.customer_id"), nullable=False)
+    total_washes = Column(Integer, default=10)
+    washes_used = Column(Integer, default=0)
+    free_wash_earned = Column(Boolean, default=False)
+    free_wash_used = Column(Boolean, default=False)
+    birthday_box_discount = Column(Boolean, default=True)
+    price_paid = Column(Float, nullable=False)
+    purchase_date = Column(Date, nullable=False)
+    expiry_date = Column(Date, nullable=False)
+    status = Column(String, default="active")  # active, completed, expired
+    notes = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.datetime.utcnow)

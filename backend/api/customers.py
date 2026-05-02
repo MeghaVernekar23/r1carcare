@@ -10,6 +10,7 @@ from services.customers_service import (
     add_customer,
     update_customer,
     delete_customer,
+    get_last_vehicle_for_customer,
 )
 from services.oauth import get_current_user
 from utils.exceptions import CustomerNotFoundException
@@ -63,5 +64,13 @@ def remove_customer(customer_id: int, db: Session = Depends(get_db)):
         return delete_customer(customer_id, db)
     except CustomerNotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))
+    except Exception:
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+
+@customer_router.get("/vehicle/{phone_number}")
+def get_vehicle_info(phone_number: str, db: Session = Depends(get_db)):
+    try:
+        return get_last_vehicle_for_customer(phone_number, db)
     except Exception:
         raise HTTPException(status_code=500, detail="Internal server error")

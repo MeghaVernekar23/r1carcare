@@ -26,7 +26,14 @@ export async function apiRequest({ url, method = "GET", headers = {}, data = nul
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.detail || `Request failed with status ${response.status}`);
+    const detail = errorData.detail;
+    let message;
+    if (Array.isArray(detail)) {
+      message = detail.map(d => d.msg || JSON.stringify(d)).join("; ");
+    } else {
+      message = detail || `Request failed with status ${response.status}`;
+    }
+    throw new Error(message);
   }
 
   return response.json();

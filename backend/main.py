@@ -7,6 +7,7 @@ from api.bookings import bookings_router
 from api.customers import customer_router
 from api.holidays import holidays_router
 from api.health import health_router
+from api.stamp_cards import stamp_cards_router
 from fastapi.middleware.cors import CORSMiddleware
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
@@ -32,6 +33,7 @@ app = FastAPI(
         {"name": "Booking", "description": "Car wash appointment management."},
         {"name": "Customer", "description": "Customer management."},
         {"name": "Holidays", "description": "Holiday / closure management."},
+        {"name": "Stamp Cards", "description": "Annual wash package / loyalty stamp cards."},
     ],
 )
 
@@ -48,3 +50,4 @@ app.include_router(users_router)
 app.include_router(bookings_router)
 app.include_router(customer_router)
 app.include_router(holidays_router)
+app.include_router(stamp_cards_router)

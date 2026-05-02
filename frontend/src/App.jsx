@@ -12,6 +12,7 @@ import OlderBookings from "./pages/OlderBookings";
 import AddBooking from "./pages/AddBooking";
 import Packages from "./pages/Packages";
 import Holidays from "./pages/Holidays";
+import StampCards from "./pages/StampCards";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="customers" element={<CustomerDetails />} />
         <Route path="packages" element={<Packages />} />
         <Route path="holidays" element={<Holidays />} />
+        <Route path="stamp-cards" element={<StampCards />} />
         <Route path="addbooking" element={<AddBooking />} />
         <Route path="bookings/today" element={<TodaysBookings />} />
         <Route path="bookings/upcoming" element={<UpcomingBookings />} />

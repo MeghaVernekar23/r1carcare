@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from db.models.sqlalchemy_models import Customer
+from db.models.sqlalchemy_models import Customer, Booking
 from db.models.pydantic_models import AddCustomerDetails
 from utils.exceptions import CustomerNotFoundException
 from utils.db_utils import get_customer_by_id
@@ -17,6 +17,9 @@ def get_customer_by_phone_number(phone_number: str, db: Session):
 
 
 def add_customer(details: AddCustomerDetails, db: Session) -> dict:
+    existing = db.query(Customer).filter(Customer.phone_number == details.phone_number).first()
+    if existing:
+        return {"message": "Customer already exists.", "customer_id": existing.customer_id}
     customer = Customer(
         name=details.name,
         phone_number=details.phone_number,
@@ -54,3 +57,21 @@ def delete_customer(customer_id: int, db: Session) -> dict:
     db.delete(customer)
     db.commit()
     return {"message": "Customer deleted successfully."}
+
+
+def get_last_vehicle_for_customer(phone_number: str, db: Session) -> dict:
+    customer = db.query(Customer).filter(Customer.phone_number == phone_number).first()
+    if not customer:
+        return {"vehicle_type_id": None, "vehicle_number": None}
+    last_booking = (
+        db.query(Booking)
+        .filter(Booking.customer_id == customer.customer_id)
+        .order_by(Booking.created_at.desc())
+        .first()
+    )
+    if not last_booking:
+        return {"vehicle_type_id": None, "vehicle_number": None}
+    return {
+        "vehicle_type_id": last_booking.vehicle_type_id,
+        "vehicle_number": last_booking.vehicle_number,
+    }

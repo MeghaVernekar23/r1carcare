@@ -14,11 +14,13 @@ import {
   LogOut,
   Package,
   Umbrella,
+  CreditCard,
 } from "lucide-react";
 
 const navItems = [
   { label: "Dashboard", path: "/dashboard", Icon: LayoutDashboard },
   { label: "Customers", path: "/customers", Icon: Users },
+  { label: "Stamp Cards", path: "/stamp-cards", Icon: CreditCard },
   { label: "Packages", path: "/packages", Icon: Package },
   { label: "Holidays", path: "/holidays", Icon: Umbrella },
   { label: "Add Appointment", path: "/addbooking", Icon: CalendarPlus },
