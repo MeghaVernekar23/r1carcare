@@ -4,8 +4,7 @@ from telethon.tl.functions.contacts import ImportContactsRequest
 from telethon.tl.types import InputPhoneContact
 
 # 1. Setup - Use your credentials from my.telegram.org
-API_ID = 31938384 
-API_HASH = '1dcfe48caa4ded8b5cf26a27699bb9fb'
+
 SESSION_NAME = 'automated_sender' # This creates 'automated_sender.session'
 
 # 2. Your target list
