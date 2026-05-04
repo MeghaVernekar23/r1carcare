@@ -89,7 +89,7 @@ export default function BookNow() {
   const [form, setForm] = useState({
     phone: "", name: "",
     package_id: "", vehicle_type_id: "", vehicle_number: "",
-    date: "", time: "",
+    date: "", time: "", payment_mode: "",
   });
   const [msg, setMsg] = useState(null);
   const [err, setErr] = useState(null);
@@ -238,6 +238,7 @@ export default function BookNow() {
           appointment_date: form.date,
           appointment_time: form.time,
           status: "pending",
+          payment_mode: form.payment_mode || null,
           payment_total: isAnnualNew ? ANNUAL.price : (isAnnualCard ? 0 : (pkg ? pkg.price : null)),
           payment_paid: isAnnualNew ? ANNUAL.price : 0,
           notes,
@@ -423,6 +424,20 @@ export default function BookNow() {
                 onChange={e => setForm({ ...form, time: e.target.value })}>
                 <option value="">Select time slot</option>
                 {TIMES.map(t => <option key={t} value={t}>{t}</option>)}
+              </select>
+            </div>
+          </div>
+
+          {/* ── Payment mode (optional) ── */}
+          <div className="bn-row">
+            <div className="bn-field">
+              <label>Payment Mode <span className="bn-optional">(optional)</span></label>
+              <select value={form.payment_mode}
+                onChange={e => setForm({ ...form, payment_mode: e.target.value })}>
+                <option value="">Select payment mode</option>
+                <option value="cash">Cash</option>
+                <option value="upi">UPI</option>
+                <option value="card">Card</option>
               </select>
             </div>
           </div>

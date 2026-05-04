@@ -182,3 +182,11 @@
 }
 
 .top-actions { display: flex; justify-content: flex-end; margin-bottom: 1.25rem; }
+
+@media (max-width: 640px) {
+  .cc-form-row { grid-template-columns: 1fr; }
+  .cc-form-card { padding: 1.25rem; }
+  .cc-btn-submit { width: 100%; }
+  .cc-table-wrap { overflow-x: auto; }
+  .page-title { font-size: 1.2rem; }
+}

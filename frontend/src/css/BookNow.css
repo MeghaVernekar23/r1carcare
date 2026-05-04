@@ -37,6 +37,7 @@
 .bn-row  { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .bn-field { display: flex; flex-direction: column; margin-bottom: 1.25rem; }
 .bn-field label { font-size: .82rem; font-weight: 600; color: #475569; margin-bottom: .4rem; }
+.bn-optional { font-weight: 400; color: #94a3b8; font-size: .78rem; }
 .bn-field input,
 .bn-field select {
   padding: .68rem 1rem; background: #f8fafc;
@@ -216,11 +217,24 @@
 .bn-success p  { font-size: .92rem; color: #64748b; line-height: 1.7; margin-bottom: 1.75rem; }
 .bn-success strong { color: #1e293b; }
 
+@media (max-width: 640px) {
+  .bn-page { padding: 1.25rem .75rem; }
+  .bn-card { padding: 1.75rem 1.25rem; }
+  .bn-card-header h1 { font-size: 1.3rem; }
+  .bn-btn-submit { width: 100%; justify-content: center; }
+}
+
 @media (max-width: 540px) {
   .bn-row { grid-template-columns: 1fr; }
-  .bn-card { padding: 1.75rem 1.25rem; }
-  .bn-acdot { width: 34px; height: 34px; }
-  .bn-acdot--used svg { width: 15px; height: 15px; }
-  .bn-ac-num { font-size: 2rem; }
-  .bn-ac-counter-row { gap: 1rem; }
+  .bn-card { padding: 1.5rem 1rem; }
+  .bn-card-header h1 { font-size: 1.2rem; }
+  .bn-type-btn { font-size: .8rem; padding: .6rem .65rem; }
+  .bn-acdot { width: 32px; height: 32px; }
+  .bn-acdot--used svg { width: 14px; height: 14px; }
+  .bn-ac-num { font-size: 1.85rem; }
+  .bn-ac-counter-row { gap: .85rem; }
+  .bn-annual-top { flex-direction: column; gap: .35rem; }
+  .bn-annual-price { font-size: 1.35rem; }
+  .bn-btn-submit { width: 100%; justify-content: center; }
+  .bn-success { padding: 2rem 1.25rem; }
 }
