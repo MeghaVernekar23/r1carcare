@@ -8,7 +8,7 @@ const PLANS = {
   "2month": { label: "2 Month — SMART",    washes: 8,  validityMonths: 2,  birthdayBoxDiscountPct: 10, defaultPrice: 3400 },
   "3month": { label: "3 Month — MOST POPULAR", washes: 12, validityMonths: 3, birthdayBoxDiscountPct: 12, defaultPrice: 4800 },
   "6month": { label: "6 Month — PREMIUM",  washes: 24, validityMonths: 6,  birthdayBoxDiscountPct: 15, defaultPrice: 9000 },
-  "annual": { label: "Annual — VIP",       washes: 10, validityMonths: 12, birthdayBoxDiscountPct: 50, defaultPrice: 4000 },
+  "annual": { label: "Annual — VIP",       washes: 48, validityMonths: 12, birthdayBoxDiscountPct: 50, defaultPrice: 4000 },
 };
 
 const PLAN_LABELS = {
@@ -19,7 +19,7 @@ const PLAN_LABELS = {
   "annual": "Annual",
 };
 
-const DEFAULT_ISSUE = { plan_type: "annual", total_washes: 10, validity_months: 12, birthday_box_discount_pct: 50, price_paid: 4000, notes: "" };
+const DEFAULT_ISSUE = { plan_type: "annual", total_washes: 48, validity_months: 12, birthday_box_discount_pct: 50, price_paid: 4000, notes: "" };
 
 function StampDots({ total, used }) {
   return (

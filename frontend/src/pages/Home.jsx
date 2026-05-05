@@ -55,17 +55,22 @@ const services = [
 const highlights = [
   { num: "2000+", label: "Cars Washed" },
   { num: "500+",  label: "Happy Customers" },
-  { num: "8",     label: "Wash Packages" },
+  { num: "13",    label: "Wash Packages" },
   { num: "4.9",   label: "Average Rating" },
 ];
 
 const packages = [
-  { name: "Basic Wash",    price: 199,  desc: "Exterior rinse + hand dry",                               featured: false },
-  { name: "Standard Wash", price: 399,  desc: "Exterior + interior vacuum + wipe down",                  featured: false },
-  { name: "Premium Wash",  price: 599,  desc: "Standard + tyre shine + window clean",                    featured: true, badge: "Popular" },
-  { name: "Deluxe Wash",   price: 899,  desc: "Premium + engine bay + air freshener",                    featured: false },
-  { name: "Full Detail",   price: 1499, desc: "Deluxe + clay bar + wax polish + deep interior",          featured: false },
-  { name: "Ceramic Coat",  price: 3999, desc: "Full Detail + long-term ceramic protection",              featured: false },
+  { name: "Bike Wash",        price: 150,  desc: "Complete 2-wheeler wash & clean",                           featured: false },
+  { name: "Body Wash",        price: 350,  desc: "Basic exterior body wash",                                  featured: false },
+  { name: "Hatchback Wash",   price: 500,  desc: "Body wash for hatchback vehicles",                          featured: false },
+  { name: "Sedan Wash",       price: 550,  desc: "Body wash for sedan vehicles",                              featured: false },
+  { name: "Compact SUV Wash", price: 550,  desc: "Body wash for compact SUV vehicles",                        featured: false },
+  { name: "SUV Luxury Wash",  price: 600,  desc: "Body wash for SUV and luxury vehicles",                     featured: false },
+  { name: "Standard Wash",    price: 399,  desc: "Exterior + interior vacuum + wipe down",                    featured: false },
+  { name: "Premium Wash",     price: 599,  desc: "Standard + tyre shine + window clean",                      featured: true, badge: "Popular" },
+  { name: "Deluxe Wash",      price: 899,  desc: "Premium + engine bay + air freshener",                      featured: false },
+  { name: "Full Detail",      price: 1499, desc: "Deluxe + clay bar + wax polish + deep interior",            featured: false },
+  { name: "Ceramic Coat",     price: 3999, desc: "Full Detail + long-term ceramic protection",                featured: false },
 ];
 
 const steps = [
@@ -156,7 +161,7 @@ export default function Home() {
           <div className="cc-hero-text hero-animate">
             <div className="cc-hero-badges">
               <span className="cc-badge cc-badge-blue">Mysuru's Premier Car Care</span>
-              <span className="cc-badge cc-badge-outline">Packages from ₹199</span>
+              <span className="cc-badge cc-badge-outline">Packages from ₹150</span>
             </div>
             <h1>
               Your Car Deserves<br />
@@ -192,7 +197,7 @@ export default function Home() {
             </ul>
             <div className="cc-hero-card-divider" />
             <div className="cc-hero-card-price">
-              Starting at <strong>₹199</strong> · Basic Wash
+              Starting at <strong>₹150</strong> · Bike Wash
             </div>
             <button className="cc-btn-primary cc-btn-block" onClick={() => navigate("/booknow")}>
               Check Availability

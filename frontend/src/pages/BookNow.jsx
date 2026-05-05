@@ -37,10 +37,10 @@ const PLANS = {
   },
   "annual": {
     label: "Annual", badge: "VIP",
-    washes: 10, validityMonths: 12, validityLabel: "12 months",
+    washes: 48, validityMonths: 12, validityLabel: "12 months",
     pricing: { flat: 4000 },
     birthdayBoxDiscountPct: 50,
-    perks: ["1 FREE wash after 10 washes", "50% OFF at BirthdayBox"],
+    perks: ["1 FREE wash after 48 washes", "50% OFF at BirthdayBox"],
   },
 };
 
