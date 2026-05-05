@@ -1,9 +1,10 @@
 from sqlalchemy.orm import Session
 from datetime import date, datetime
-from db.models.sqlalchemy_models import Booking, Packages, VehicleType
+from db.models.sqlalchemy_models import Booking, Customer, Packages, VehicleType
 from db.models.pydantic_models import AddBookingDetails, EditBookingDetails
 from utils.exceptions import BookingNotFoundException, InvalidFilterException
 from utils.db_utils import build_booking_details, get_active_packages, get_active_vehicle_types
+from services.telegram_service import notify_booking_confirmation
 
 ALLOWED_FILTERS = ["today", "upcoming", "past", "pending", "confirmed", "completed", "cancelled"]
 
@@ -86,6 +87,18 @@ def add_booking(details: AddBookingDetails, db: Session) -> dict:
     db.add(booking)
     db.commit()
     db.refresh(booking)
+
+    customer = db.query(Customer).filter(Customer.customer_id == details.customer_id).first()
+    package = db.query(Packages).filter(Packages.package_id == details.package_id).first()
+    if customer and customer.phone_number:
+        notify_booking_confirmation(
+            customer_name=customer.name,
+            phone=customer.phone_number,
+            appointment_date=details.appointment_date,
+            appointment_time=details.appointment_time,
+            package_name=package.package_name if package else "Car Wash",
+        )
+
     return {"message": "Booking created successfully.", "booking_id": booking.booking_id}
 
 
