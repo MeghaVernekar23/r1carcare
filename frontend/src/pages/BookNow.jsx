@@ -50,6 +50,18 @@ const VEHICLE_CATS = [
   { key: "suv", label: "SUV" },
 ];
 
+const SINGLE_WASH_PRICE = { hatchback: 500, sedan: 550, suv: 600 };
+
+function getPlanSavings(plan) {
+  const cats = Object.keys(SINGLE_WASH_PRICE);
+  if (plan.pricing.flat !== undefined) {
+    const amounts = cats.map(c => plan.washes * SINGLE_WASH_PRICE[c] - plan.pricing.flat);
+    return { min: Math.min(...amounts), max: Math.max(...amounts) };
+  }
+  const saving = SINGLE_WASH_PRICE.hatchback * plan.washes - plan.pricing.hatchback;
+  return { flat: saving };
+}
+
 const PLAN_BADGE_CLASS = {
   "1month": "bn-plan-badge--basic",
   "2month": "bn-plan-badge--smart",
@@ -461,6 +473,16 @@ export default function BookNow() {
                         ? `₹${plan.pricing.flat.toLocaleString("en-IN")}`
                         : `₹${plan.pricing.hatchback.toLocaleString("en-IN")} – ₹${plan.pricing.suv.toLocaleString("en-IN")}`}
                     </div>
+                    {(() => {
+                      const s = getPlanSavings(plan);
+                      return (
+                        <div className="bn-plan-savings">
+                          {s.flat !== undefined
+                            ? `Save ₹${s.flat.toLocaleString("en-IN")}`
+                            : `Save ₹${s.min.toLocaleString("en-IN")} – ₹${s.max.toLocaleString("en-IN")}`}
+                        </div>
+                      );
+                    })()}
                   </button>
                 ))}
               </div>

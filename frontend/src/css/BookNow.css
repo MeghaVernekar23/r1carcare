@@ -253,6 +253,12 @@
 .bn-plan-name   { font-size: .9rem; font-weight: 700; color: #0f172a; margin-bottom: .1rem; }
 .bn-plan-detail { font-size: .78rem; color: #64748b; }
 .bn-plan-price  { font-size: .88rem; font-weight: 700; color: #1d4ed8; margin-top: .3rem; }
+.bn-plan-savings {
+  display: inline-block; margin-top: .45rem;
+  font-size: .72rem; font-weight: 700;
+  color: #15803d; background: #dcfce7;
+  padding: .15rem .5rem; border-radius: 20px;
+}
 
 /* ── Vehicle category selector ── */
 .bn-vcat-section  { margin-bottom: 1.25rem; }
