@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from typing import Optional, List
 from datetime import date, datetime
 from enum import Enum
@@ -112,6 +112,11 @@ class AddBookingDetails(BaseModel):
     additional_services: Optional[list] = None
     created_by: Optional[int] = None
 
+    @field_validator("vehicle_number", mode="before")
+    @classmethod
+    def uppercase_vehicle_number(cls, v):
+        return v.upper() if isinstance(v, str) else v
+
 
 class EditBookingDetails(BaseModel):
     package_id: Optional[int] = None
@@ -127,6 +132,11 @@ class EditBookingDetails(BaseModel):
     payment_notes: Optional[str] = None
     additional_services: Optional[list] = None
     updated_by: Optional[int] = None
+
+    @field_validator("vehicle_number", mode="before")
+    @classmethod
+    def uppercase_vehicle_number(cls, v):
+        return v.upper() if isinstance(v, str) else v
 
 
 class CustomerBookingSummary(BaseModel):
