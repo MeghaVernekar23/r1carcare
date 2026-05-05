@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 import os
 from sqlalchemy.orm import Session, declarative_base, sessionmaker
 from collections.abc import Generator
@@ -63,8 +63,23 @@ def seed_data() -> None:
         db.close()
 
 
+def _migrate_stamp_cards(engine) -> None:
+    with engine.connect() as conn:
+        result = conn.execute(text("PRAGMA table_info(stamp_cards)"))
+        existing = {row[1] for row in result}
+        for col, typedef in [
+            ("plan_type", "VARCHAR"),
+            ("validity_months", "INTEGER"),
+            ("birthday_box_discount_pct", "INTEGER"),
+        ]:
+            if col not in existing:
+                conn.execute(text(f"ALTER TABLE stamp_cards ADD COLUMN {col} {typedef}"))
+        conn.commit()
+
+
 def create_tables() -> None:
     Base.metadata.create_all(bind=engine)
+    _migrate_stamp_cards(engine)
     seed_data()
 
 

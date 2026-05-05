@@ -92,5 +92,8 @@ class StampCard(Base):
     expiry_date = Column(Date, nullable=False)
     status = Column(String, default="active")  # active, completed, expired
     notes = Column(Text, nullable=True)
+    plan_type = Column(String, nullable=True)
+    validity_months = Column(Integer, nullable=True)
+    birthday_box_discount_pct = Column(Integer, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.datetime.utcnow)

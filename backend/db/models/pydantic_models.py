@@ -163,6 +163,9 @@ class StampCardCreate(BaseModel):
     customer_id: int
     total_washes: int = 10
     price_paid: float = 4000.0
+    plan_type: Optional[str] = "annual"
+    validity_months: int = 12
+    birthday_box_discount_pct: Optional[int] = None
     notes: Optional[str] = None
 
 
@@ -177,10 +180,13 @@ class StampCardResponse(BaseModel):
     free_wash_earned: bool
     free_wash_used: bool
     birthday_box_discount: bool
+    birthday_box_discount_pct: Optional[int] = None
     price_paid: float
     purchase_date: date
     expiry_date: date
     status: str
+    plan_type: Optional[str] = None
+    validity_months: Optional[int] = None
     notes: Optional[str] = None
     created_at: Optional[datetime] = None
 

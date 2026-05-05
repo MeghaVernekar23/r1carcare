@@ -1,7 +1,16 @@
 import datetime
+from calendar import monthrange
 from sqlalchemy.orm import Session
 from db.models.sqlalchemy_models import StampCard, Customer
 from db.models.pydantic_models import StampCardCreate
+
+
+def _add_months(date: datetime.date, months: int) -> datetime.date:
+    month = date.month + months
+    year = date.year + (month - 1) // 12
+    month = (month - 1) % 12 + 1
+    day = min(date.day, monthrange(year, month)[1])
+    return date.replace(year=year, month=month, day=day)
 
 
 class StampCardNotFoundException(Exception):
@@ -29,10 +38,13 @@ def _build_response(card: StampCard, db: Session) -> dict:
         "free_wash_earned": card.free_wash_earned,
         "free_wash_used": card.free_wash_used,
         "birthday_box_discount": card.birthday_box_discount,
+        "birthday_box_discount_pct": card.birthday_box_discount_pct,
         "price_paid": card.price_paid,
         "purchase_date": card.purchase_date,
         "expiry_date": card.expiry_date,
         "status": card.status,
+        "plan_type": card.plan_type or "annual",
+        "validity_months": card.validity_months or 12,
         "notes": card.notes,
         "created_at": card.created_at,
     }
@@ -78,7 +90,8 @@ def purchase_stamp_card(details: StampCardCreate, db: Session) -> dict:
         raise ValueError("Customer already has an active stamp card.")
 
     today = datetime.date.today()
-    expiry = today.replace(year=today.year + 1)
+    validity_months = details.validity_months or 12
+    expiry = _add_months(today, validity_months)
 
     card = StampCard(
         customer_id=details.customer_id,
@@ -87,10 +100,13 @@ def purchase_stamp_card(details: StampCardCreate, db: Session) -> dict:
         free_wash_earned=False,
         free_wash_used=False,
         birthday_box_discount=True,
+        birthday_box_discount_pct=details.birthday_box_discount_pct,
         price_paid=details.price_paid,
         purchase_date=today,
         expiry_date=expiry,
         status="active",
+        plan_type=details.plan_type or "annual",
+        validity_months=validity_months,
         notes=details.notes,
     )
     db.add(card)

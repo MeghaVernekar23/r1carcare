@@ -3,7 +3,23 @@ import { apiRequest } from "../utils/APIrequest";
 import { BASE_URL } from "../services/utils";
 import "../css/StampCards.css";
 
-const DEFAULT_ISSUE = { total_washes: 10, price_paid: 4000, notes: "" };
+const PLANS = {
+  "1month": { label: "1 Month — BASIC",    washes: 4,  validityMonths: 1,  birthdayBoxDiscountPct: 10, defaultPrice: 1800 },
+  "2month": { label: "2 Month — SMART",    washes: 8,  validityMonths: 2,  birthdayBoxDiscountPct: 10, defaultPrice: 3400 },
+  "3month": { label: "3 Month — MOST POPULAR", washes: 12, validityMonths: 3, birthdayBoxDiscountPct: 12, defaultPrice: 4800 },
+  "6month": { label: "6 Month — PREMIUM",  washes: 24, validityMonths: 6,  birthdayBoxDiscountPct: 15, defaultPrice: 9000 },
+  "annual": { label: "Annual — VIP",       washes: 10, validityMonths: 12, birthdayBoxDiscountPct: 50, defaultPrice: 4000 },
+};
+
+const PLAN_LABELS = {
+  "1month": "1 Month",
+  "2month": "2 Month",
+  "3month": "3 Month",
+  "6month": "6 Month",
+  "annual": "Annual",
+};
+
+const DEFAULT_ISSUE = { plan_type: "annual", total_washes: 10, validity_months: 12, birthday_box_discount_pct: 50, price_paid: 4000, notes: "" };
 
 function StampDots({ total, used }) {
   return (
@@ -114,7 +130,15 @@ export default function StampCards() {
       const res = await apiRequest({
         url: `${BASE_URL}/stamp-cards/purchase`,
         method: "POST",
-        data: { customer_id: customer.customer_id, ...issueForm },
+        data: {
+          customer_id: customer.customer_id,
+          total_washes: issueForm.total_washes,
+          price_paid: issueForm.price_paid,
+          plan_type: issueForm.plan_type,
+          validity_months: issueForm.validity_months,
+          birthday_box_discount_pct: issueForm.birthday_box_discount_pct,
+          notes: issueForm.notes,
+        },
       });
       setActionMsg(res.message);
       setShowIssueForm(false);
@@ -146,7 +170,7 @@ export default function StampCards() {
     <div className="sc-page">
       <div className="sc-page-header">
         <h1>Stamp Cards</h1>
-        <p>Annual wash packages — 10 washes · 12-month validity · Free wash on completion</p>
+        <p>Membership wash packages — 1 Month · 2 Month · 3 Month · 6 Month · Annual · Free wash on completion</p>
       </div>
 
       {/* Search */}
@@ -185,13 +209,35 @@ export default function StampCards() {
           {showIssueForm && (
             <div className="sc-issue-form">
               <h3>Issue New Stamp Card</h3>
+              <div className="sc-form-field">
+                <label>Plan Type</label>
+                <select
+                  value={issueForm.plan_type}
+                  onChange={e => {
+                    const pt = e.target.value;
+                    const plan = PLANS[pt];
+                    setIssueForm({
+                      ...issueForm,
+                      plan_type: pt,
+                      total_washes: plan.washes,
+                      validity_months: plan.validityMonths,
+                      birthday_box_discount_pct: plan.birthdayBoxDiscountPct,
+                      price_paid: plan.defaultPrice,
+                    });
+                  }}
+                >
+                  {Object.entries(PLANS).map(([key, p]) => (
+                    <option key={key} value={key}>{p.label}</option>
+                  ))}
+                </select>
+              </div>
               <div className="sc-form-grid">
                 <div className="sc-form-field">
                   <label>Total Washes</label>
                   <input
                     type="number" min="1"
                     value={issueForm.total_washes}
-                    onChange={e => setIssueForm({ ...issueForm, total_washes: parseInt(e.target.value) || 10 })}
+                    onChange={e => setIssueForm({ ...issueForm, total_washes: parseInt(e.target.value) || 4 })}
                   />
                 </div>
                 <div className="sc-form-field">
@@ -208,7 +254,7 @@ export default function StampCards() {
                 <input
                   value={issueForm.notes}
                   onChange={e => setIssueForm({ ...issueForm, notes: e.target.value })}
-                  placeholder="e.g. customer paid cash"
+                  placeholder="e.g. customer paid cash, sedan pricing"
                 />
               </div>
               <div className="sc-form-actions">
@@ -224,7 +270,9 @@ export default function StampCards() {
             <div className="sc-card">
               <div className="sc-card-top">
                 <div>
-                  <div className="sc-card-title">Wash Stamp Card</div>
+                  <div className="sc-card-title">
+                    {PLAN_LABELS[card.plan_type] || "Annual"} Package
+                  </div>
                   <div className="sc-card-meta">
                     Valid until {card.expiry_date} &nbsp;·&nbsp; ₹{card.price_paid}
                   </div>
@@ -259,9 +307,9 @@ export default function StampCards() {
                   Free wash redeemed. Card fully used.
                 </div>
               )}
-              {card.birthday_box_discount && (
+              {(card.birthday_box_discount || card.birthday_box_discount_pct) && (
                 <div className="sc-banner sc-banner--birthday">
-                  50% off at BirthdayBox — included with this card
+                  {card.birthday_box_discount_pct || 50}% off at BirthdayBox — included with this card
                 </div>
               )}
 
@@ -296,6 +344,7 @@ export default function StampCards() {
                 <tr>
                   <th>Customer</th>
                   <th>Phone</th>
+                  <th>Plan</th>
                   <th>Progress</th>
                   <th>Status</th>
                   <th>Expiry</th>
@@ -308,6 +357,7 @@ export default function StampCards() {
                   <tr key={c.card_id} className="sc-table-row" onClick={() => selectCardFromTable(c)}>
                     <td>{c.customer_name || "—"}</td>
                     <td>{c.customer_phone || "—"}</td>
+                    <td>{PLAN_LABELS[c.plan_type] || "Annual"}</td>
                     <td>
                       <div className="sc-mini-row">
                         <div className="sc-mini-dots">
@@ -325,7 +375,11 @@ export default function StampCards() {
                         ? c.free_wash_used ? <span className="sc-tick sc-tick--used">Used</span> : <span className="sc-tick sc-tick--earned">Earned</span>
                         : "—"}
                     </td>
-                    <td>{c.birthday_box_discount ? <span className="sc-tick sc-tick--earned">50% off</span> : "—"}</td>
+                    <td>
+                      {(c.birthday_box_discount_pct || c.birthday_box_discount)
+                        ? <span className="sc-tick sc-tick--earned">{c.birthday_box_discount_pct || 50}% off</span>
+                        : "—"}
+                    </td>
                   </tr>
                 ))}
               </tbody>
