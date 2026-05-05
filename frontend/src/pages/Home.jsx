@@ -356,13 +356,13 @@ export default function Home() {
           <h2>Ready for a Gleaming Car?</h2>
           <p>Book your slot online in under 2 minutes. Walk-ins welcome — but online booking guarantees your preferred time.</p>
           <div className="cc-cta-btns">
-            <a href="tel:+919876543210" className="cc-btn-hero-primary" style={{ textDecoration: "none" }}>
-              Call Us — +91 98765 43210
+            <a href="tel:+918971543330" className="cc-btn-hero-primary" style={{ textDecoration: "none" }}>
+              Call Us — +91 89715 43330
             </a>
             <button className="cc-btn-hero-ghost" onClick={() => navigate("/booknow")}>Book Now</button>
           </div>
           <p className="cc-cta-address">
-            12, Industrial Layout, Near Ring Road, Vijayanagar, Mysuru – 570 017
+            No. 125, Near Bus Depot, 2nd Main, 2nd Stage, Kuvempunagar, Mysore-570023, Karnatak
           </p>
         </FadeSection>
       </section>
@@ -371,8 +371,8 @@ export default function Home() {
       <footer className="cc-footer">
         <div className="cc-footer-brand"><span className="brand-r1">R1</span> Car Care</div>
         <div className="cc-footer-info">
-          <p>12, Industrial Layout, Near Ring Road, Vijayanagar, Mysuru – 570 017</p>
-          <p><a href="tel:+919876543210">+91 98765 43210</a></p>
+          <p>No. 125, Near Bus Depot, 2nd Main, 2nd Stage, Kuvempunagar, Mysore-570023, Karnatak</p>
+          <p><a href="tel:+918971543330">+91 89715 43330</a></p>
         </div>
         <p className="cc-footer-copy">© {new Date().getFullYear()} R1 Car Care · All rights reserved.</p>
       </footer>
