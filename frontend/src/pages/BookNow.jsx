@@ -256,6 +256,12 @@ export default function BookNow() {
       }
     }
 
+    if (bookingType === "single" && !form.package_id) {
+      setErr("Please select a wash package.");
+      localStorage.removeItem("access_token");
+      return;
+    }
+
     try {
       let notes = null;
       let cardIdForWash = null;
@@ -513,14 +519,17 @@ export default function BookNow() {
           {/* ── Single wash: package selector ── */}
           {bookingType === "single" && (
             <div className="bn-field">
-              <label>Wash Package *</label>
-              <select required value={form.package_id}
-                onChange={e => setForm({ ...form, package_id: parseInt(e.target.value) })}>
-                <option value="">Select package</option>
+              <div className="bn-section-label">Select a Wash Package *</div>
+              <div className="bn-plans-grid">
                 {packages.map(p => (
-                  <option key={p.package_id} value={p.package_id}>{p.package_name} — ₹{p.price}</option>
+                  <button key={p.package_id} type="button"
+                    className={`bn-plan-card${form.package_id === p.package_id ? " bn-plan-card--selected" : ""}`}
+                    onClick={() => setForm({ ...form, package_id: p.package_id })}>
+                    <div className="bn-plan-name">{p.package_name}</div>
+                    <div className="bn-plan-price">₹{p.price.toLocaleString("en-IN")}</div>
+                  </button>
                 ))}
-              </select>
+              </div>
             </div>
           )}
 
