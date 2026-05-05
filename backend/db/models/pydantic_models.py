@@ -171,7 +171,7 @@ class HolidayResponse(BaseModel):
 # ── Stamp Card models ─────────────────────────────────────
 class StampCardCreate(BaseModel):
     customer_id: int
-    total_washes: int = 10
+    total_washes: int = 48
     price_paid: float = 4000.0
     plan_type: Optional[str] = "annual"
     validity_months: int = 12
